@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  eatRight
 //
-//  Created by Max Boving on 9/30/24.
+//  Created by only Nico Boving(alone) on 9/30/24.
 //
 
 import SwiftUI
@@ -10,15 +10,22 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Image("Image")
+				.cornerRadius(20)
+				.imageScale(.medium)
+				.foregroundStyle(.green)
+            Text("Copyright 2024")
+				.bold()
+				.padding()
         }
         .padding()
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews:
+	PreviewProvider {
+	static var  previews: some View {
+		ContentView()
+	}
+
 }
