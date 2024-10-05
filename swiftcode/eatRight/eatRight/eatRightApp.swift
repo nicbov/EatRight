@@ -7,10 +7,10 @@
 import SwiftUI
 
 @main
-struct StartApp: App {
-    var body: some Scene {
-        WindowGroup {
+struct EatRightApp: App {
+	var body: some Scene {
+		WindowGroup {
 			ContentView()
-        }
-    }
+		}
+	}
 }
