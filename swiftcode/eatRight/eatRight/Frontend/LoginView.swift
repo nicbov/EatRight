@@ -41,6 +41,7 @@ struct LoginView: View {
 					VStack(spacing: 15) {
 						TextField("Username", text: $username)
 							.textFieldStyle(RoundedBorderTextFieldStyle())
+							.autocapitalization(.none)
 							.padding(.horizontal)
 							.cornerRadius(10)
 
