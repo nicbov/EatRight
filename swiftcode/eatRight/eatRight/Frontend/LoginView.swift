@@ -13,6 +13,7 @@ struct LoginView: View {
 	@State private var isLoading = false
 	
 	let primaryColor = Color.green
+	var authenticate: (Bool) -> Void // Authentication closure passed from ContentView
 	
 	var body: some View {
 		GeometryReader { geometry in
@@ -103,12 +104,13 @@ struct LoginView: View {
 		DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
 			isLoading = false
 			
-			if username == "test" && password == "password" {
+			if username == "Test" && password == "Password" {
 				print("Login successful")
-				// Navigate to main app interface here
+				authenticate(true) // Call the authentication closure to switch to home
 			} else {
 				alertMessage = "Invalid username or password. Please try again."
 				showingAlert = true
+				authenticate(false)
 			}
 		}
 	}
@@ -116,7 +118,7 @@ struct LoginView: View {
 
 struct LoginView_Previews: PreviewProvider {
 	static var previews: some View {
-		LoginView()
+		LoginView(authenticate: { _ in })
 	}
 }
 
