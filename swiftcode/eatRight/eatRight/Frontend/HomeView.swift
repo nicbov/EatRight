@@ -12,165 +12,113 @@ struct HomeView: View {
 	@State private var searchText: String = ""
 	@Binding var showingProfile: Bool // Binding for profile popup
 	@State private var showFilters: Bool = false // State for filter pop-up
+	@State private var showingMyMeals: Bool = false // State for My Meals view
+	var switchToFavorites: () -> Void // Callback to switch to Favorites
 
 	var body: some View {
 		GeometryReader { geometry in
 			VStack {
-				// Full-width logo with green outline and rounded corners
-				Image("Image")
-					.resizable()
-					.scaledToFit()
-					.frame(width: geometry.size.width * 0.8, height: geometry.size.height * 0.08)
-					.overlay(RoundedRectangle(cornerRadius: 10)
-						.stroke(Color.green, lineWidth: 2))
-					.padding(.top, 10)
-
-				// Tabs HStack including Profile in one long box, with vertical separators
-				HStack(spacing: 0) {
-					Group {
-						// Tab: Home
-						Button("Home") {
-							// Action for home tab
-						}
-						.font(.headline)
-						.frame(maxWidth: .infinity)
-						.padding()
-						.foregroundColor(.green)
-
-						// Vertical separator
-						Divider()
-							.frame(height: 40)
-							.background(Color.gray)
-
-						// Tab: Favorites
-						Button("Favorites") {
-							// Action for favorites tab
-						}
-						.font(.headline)
-						.frame(maxWidth: .infinity)
-						.padding()
-						.foregroundColor(.green)
-
-						// Vertical separator
-						Divider()
-							.frame(height: 40)
-							.background(Color.gray)
-
-						// Tab: Top Ten
-						Button("Top Ten") {
-							// Action for top ten tab
-						}
-						.font(.headline)
-						.frame(maxWidth: .infinity)
-						.padding()
-						.foregroundColor(.green)
-					}
-
-					// Vertical separator for Profile button
-					Divider()
-						.frame(height: 40)
-						.background(Color.gray)
-
-					// Profile button with adjusted size and positioning
-					Button(action: {
-						showingProfile.toggle()
-					}) {
-						Image(systemName: "person.circle.fill")
-							.resizable()
-							.frame(width: 40, height: 40) // Slightly smaller size
-							.foregroundColor(.green)
-					}
-					.padding(.leading, 10) // Adjusted padding to center
-					.sheet(isPresented: $showingProfile) {
-						ProfileView(showingProfile: $showingProfile) // Pass binding to ProfileView
-					}
-				}
-				.frame(maxHeight: 40) // Make the long box match the vertical lines height
-				.background(Color.white)
-				.cornerRadius(10)
-				.shadow(radius: 5)
-
-				Divider()
-
-				// HStack with "Show Filters" button on the left and search bar on the right
-				HStack {
-					// Show Filters button
-					Button(action: {
-						showFilters.toggle()
-					}) {
-						Text("Show Filters")
-							.foregroundColor(.green)
-							.padding()
-							.background(RoundedRectangle(cornerRadius: 10).fill(Color.green.opacity(0.2)))
-					}
-					.padding(.leading)
-
-					Spacer()
-
-					// Search bar
-					TextField("Search Recipes", text: $searchText)
-						.textFieldStyle(RoundedBorderTextFieldStyle())
-						.padding(.trailing)
-				}
-				.padding(.vertical, 10)
-
-				HStack {
-					if showFilters {
-						VStack {
-							Text("Filters")
-								.font(.headline)
-								.foregroundColor(.green)
-
-							// Protein Slider
-							VStack {
-								Text("Protein: \(Int(protein))g")
-									.foregroundColor(.green)
-								Slider(value: $protein, in: 0...200)
-									.accentColor(.green)
-							}
-							.padding(.vertical, 10)
-
-							// Carbs Slider
-							VStack {
-								Text("Carbs: \(Int(carbs))g")
-									.foregroundColor(.green)
-								Slider(value: $carbs, in: 0...200)
-									.accentColor(.green)
-							}
-							.padding(.vertical, 10)
-
-							// Fats Slider
-							VStack {
-								Text("Fats: \(Int(fats))g")
-									.foregroundColor(.green)
-								Slider(value: $fats, in: 0...200)
-									.accentColor(.green)
-							}
-							.padding(.vertical, 10)
-						}
-						.frame(width: geometry.size.width * 0.25)
-						.padding()
-						.background(Color.green.opacity(0.1))
+				// Apply filters button
+				Button(action: {
+					showFilters.toggle() // Toggle filters
+				}) {
+					Text("Apply Filters")
+						.font(.subheadline) // Smaller font size
+						.padding(5) // Reduced padding
+						.background(Color.green)
+						.foregroundColor(.white)
 						.cornerRadius(10)
-					}
-
-					Spacer()
-
-					// Recipe list placeholder
-					List {
-						Text("No recipes to show")
-							.foregroundColor(.gray)
-					}
-					.listStyle(PlainListStyle())
-					.padding(.horizontal)
 				}
+				.padding(.leading, 10) // Padding for left alignment
+
+				// Search bar
+				HStack {
+					TextField("Search for recipes...", text: $searchText)
+						.textFieldStyle(RoundedBorderTextFieldStyle())
+						.padding(.horizontal)
+						.frame(height: 50) // Increased height for the search bar
+				}
+				.padding(.top)
+
+				// Filter Sliders (only show when filters are active)
+				if showFilters {
+					createFilterSlider(label: "Protein", value: $protein)
+					createFilterSlider(label: "Carbs", value: $carbs)
+					createFilterSlider(label: "Fats", value: $fats)
+				}
+
+				// My Meals view (conditional)
+				if showingMyMeals {
+					VStack {
+						Text("My Meals")
+							.font(.largeTitle)
+							.padding()
+
+						// Example array for meals
+						let meals = ["Meal 1", "Meal 2", "Meal 3"] // Replace with actual meal data
+
+						// Check if meals exist
+						if !meals.isEmpty {
+							ForEach(meals, id: \.self) { meal in
+								NavigationLink(destination: MealDetailView(mealName: meal)) {
+									Text(meal)
+										.font(.subheadline) // Smaller font size for meal names
+										.padding()
+										.background(Color.white)
+										.cornerRadius(10)
+										.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3)
+								}
+								.padding(.bottom)
+							}
+						} else {
+							Text("No Selected Meals")
+								.font(.headline)
+								.foregroundColor(.gray)
+						}
+					}
+					.padding()
+					.frame(maxWidth: geometry.size.width * 0.25) // Limit width to left 1/4 of the screen
+					.padding(.top, 10) // Space above My Meals section
+				}
+
+				Spacer() // Add space to push content up
 			}
+			.padding(.horizontal) // Add padding to the edges
 		}
+	}
+
+	// Helper function to create tab buttons
+	private func createTabButton(title: String, action: @escaping () -> Void) -> some View {
+		Button(title) {
+			action()
+		}
+		.font(.headline)
+		.frame(maxWidth: .infinity)
+		.padding()
+		.foregroundColor(.green)
+		.background(Color.white)
+		.cornerRadius(5)
+	}
+
+	// Helper function to create filter sliders
+	private func createFilterSlider(label: String, value: Binding<Double>) -> some View {
+		VStack(alignment: .leading) {
+			Text("\(label): \(Int(value.wrappedValue))g")
+			Slider(value: value, in: 0...100, step: 1)
+				.accentColor(.green)
+		}
+		.padding()
 	}
 }
 
+// Preview for HomeView
 struct HomeView_Previews: PreviewProvider {
+	@State static var showingProfile: Bool = false // Static binding for preview
+
 	static var previews: some View {
-		HomeView(showingProfile: .constant(false)) // Use constant binding for preview
+		HomeView(showingProfile: $showingProfile, switchToFavorites: {
+			print("Switching to Favorites") // Preview action
+		})
+		.previewLayout(.sizeThatFits)
 	}
 }
