@@ -1,62 +1,32 @@
 //
-//  ProfileView.swift
+//  AccountSettingsView.swift
 //  eatRight
 //
-//  Created by Nicolas Boving on 10/3/24.
-//import SwiftUI
+//  Created by Nicolas Boving on 10/13/24.
+//
 import SwiftUI
 
-struct ProfileView: View {
-	@Binding var showingProfile: Bool // Binding to manage visibility
-	@State private var showAccountSettings = false // State to manage navigation to Account Settings
+struct AccountSettingView: View {
+	@Environment(\.presentationMode) var presentationMode // To dismiss the view
 
 	var body: some View {
 		NavigationView {
 			VStack(spacing: 20) {
-				// Profile Title
-				Text("Profile")
+				// Account Settings Title
+				Text("Account Settings")
 					.font(.largeTitle)
 					.fontWeight(.bold)
 					.padding()
 
-				// Profile Image Placeholder
-				Image(systemName: "person.circle.fill")
-					.resizable()
-					.scaledToFit()
-					.frame(width: 100, height: 100)
-					.foregroundColor(.green)
-					.padding()
-
-				// Account Settings Button
-				Button(action: {
-					showAccountSettings.toggle() // Show Account Settings
-				}) {
-					HStack {
-						Image(systemName: "gear")
-							.foregroundColor(.green)
-						Text("Account Settings")
-							.font(.headline)
-							.foregroundColor(.primary)
-						Spacer()
-					}
-					.padding()
-					.background(Color.white)
-					.cornerRadius(10)
-					.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3)
-				}
-				.sheet(isPresented: $showAccountSettings) {
-					AccountSettingView() // Navigate to AccountSettingView
-				}
-
 				// Interactive Elements
 				Group {
 					Button(action: {
-						// Action for Notifications
+						// Action for Change Email and Password
 					}) {
 						HStack {
-							Image(systemName: "bell")
+							Image(systemName: "lock.fill")
 								.foregroundColor(.green)
-							Text("Notifications")
+							Text("Change Email and Password")
 								.foregroundColor(.primary)
 							Spacer()
 						}
@@ -67,12 +37,12 @@ struct ProfileView: View {
 					}
 
 					Button(action: {
-						// Action for Payment Activity
+						// Action for Profile Information
 					}) {
 						HStack {
-							Image(systemName: "lock")
+							Image(systemName: "person.circle.fill")
 								.foregroundColor(.green)
-							Text("Payment Activity")
+							Text("Profile Information")
 								.foregroundColor(.primary)
 							Spacer()
 						}
@@ -83,12 +53,12 @@ struct ProfileView: View {
 					}
 
 					Button(action: {
-						// Action for Privacy Settings
+						// Action for Language Preferences
 					}) {
 						HStack {
-							Image(systemName: "lock")
+							Image(systemName: "globe")
 								.foregroundColor(.green)
-							Text("Privacy Settings")
+							Text("Language Preferences")
 								.foregroundColor(.primary)
 							Spacer()
 						}
@@ -99,12 +69,12 @@ struct ProfileView: View {
 					}
 
 					Button(action: {
-						// Action for Help & Support
+						// Action for Manage Subscriptions
 					}) {
 						HStack {
-							Image(systemName: "questionmark.circle")
+							Image(systemName: "star.fill")
 								.foregroundColor(.green)
-							Text("Help & Support")
+							Text("Manage Subscriptions")
 								.foregroundColor(.primary)
 							Spacer()
 						}
@@ -115,12 +85,12 @@ struct ProfileView: View {
 					}
 
 					Button(action: {
-						// Action for About Us
+						// Action for Data Privacy
 					}) {
 						HStack {
-							Image(systemName: "info.circle")
+							Image(systemName: "shield.fill")
 								.foregroundColor(.green)
-							Text("About Us")
+							Text("Data Privacy")
 								.foregroundColor(.primary)
 							Spacer()
 						}
@@ -134,9 +104,26 @@ struct ProfileView: View {
 				// Spacer to push content upwards
 				Spacer()
 
-				// Done Button
+				// Logout Button
+				Button(action: {
+					// Action for logout (currently does nothing)
+				}) {
+					HStack {
+						Image(systemName: "arrow.left.circle")
+							.foregroundColor(.red)
+						Text("Logout")
+							.foregroundColor(.red)
+						Spacer()
+					}
+					.padding()
+					.background(Color.white)
+					.cornerRadius(10)
+					.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3)
+				}
+
+				// Done Button to return to ProfileView
 				Button("Done") {
-					showingProfile = false // Dismiss the profile view
+					presentationMode.wrappedValue.dismiss() // Dismiss the AccountSettingsView
 				}
 				.padding()
 				.background(Color.green)
@@ -148,12 +135,10 @@ struct ProfileView: View {
 	}
 }
 
-// Preview for ProfileView
-struct ProfileView_Previews: PreviewProvider {
-	@State static var showingProfile: Bool = true // Static binding for preview
-
+// Preview for AccountSettingView
+struct AccountSettingView_Previews: PreviewProvider {
 	static var previews: some View {
-		ProfileView(showingProfile: $showingProfile)
+		AccountSettingView()
 			.previewLayout(.sizeThatFits) // Adjust preview layout as needed
 			.padding()
 	}
