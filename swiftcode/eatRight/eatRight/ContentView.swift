@@ -38,7 +38,13 @@ struct ContentView: View {
 				LoginView(authenticate: authenticateUser)
 			case .home:
 				VStack {
-					HeaderView(showingProfile: $showingProfile, selectedTab: $selectedTab, showingMyMeals: $showingMyMeals, switchToFavorites: switchToFavorites, switchToMyMeals: switchToMyMeals)
+					HeaderView(
+						showingProfile: $showingProfile,
+						selectedTab: $selectedTab,
+						showingMyMeals: $showingMyMeals,
+						switchToFavorites: switchToFavorites,
+						switchToMyMeals: switchToMyMeals
+					)
 
 					// Display content based on the selected tab
 					switch selectedTab {
@@ -65,7 +71,8 @@ struct ContentView: View {
 
 	// Switch to My Meals tab
 	func switchToMyMeals() {
-		selectedTab = .myMeals
+		selectedTab = .myMeals // Update this to switch to My Meals tab
+		showingMyMeals = true // Ensure My Meals view is shown if you need it
 	}
 
 	func authenticateUser(isAuthenticated: Bool) {
@@ -78,6 +85,7 @@ struct ContentView: View {
 	}
 }
 
+// Preview for ContentView
 struct ContentView_Previews: PreviewProvider {
 	static var previews: some View {
 		ContentView()

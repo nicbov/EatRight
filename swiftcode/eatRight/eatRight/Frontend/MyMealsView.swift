@@ -8,57 +8,50 @@ import SwiftUI
 
 struct MyMealsView: View {
 	@Binding var showingProfile: Bool // Binding to manage profile view visibility
-	@State private var meals = ["Meal 1", "Meal 2", "Meal 3"] // Example meal list
+	@State private var meals = [
+		"Meal 1", "Meal 2", "Meal 3", "Meal 4", "Meal 5",
+		"Meal 6", "Meal 7", "Meal 8", "Meal 9", "Meal 10"
+	]
 
 	var body: some View {
-		GeometryReader { geometry in
-			NavigationView {
-				VStack(spacing: 20) {
-					Text("My Meals")
-						.font(.largeTitle)
-						.fontWeight(.bold)
-						.padding()
+		NavigationView {
+			VStack {
+				// Meal Grid Layout
+				let columns = [
+					GridItem(.flexible(), spacing: 20), // Spacing between columns
+					GridItem(.flexible(), spacing: 20)
+				]
 
-					// Meal List
-					List(meals, id: \.self) { meal in
-						Text(meal)
-					}
-					.listStyle(PlainListStyle())
-
-					// Profile Button
-					Button(action: {
-						showingProfile.toggle() // Show Profile View
-					}) {
-						HStack {
-							Image(systemName: "person.circle.fill")
-								.foregroundColor(.green)
-							Text("Profile")
-								.font(.headline)
-								.foregroundColor(.primary)
-							Spacer()
+				ScrollView {
+					LazyVGrid(columns: columns, spacing: 20) {
+						ForEach(meals, id: \.self) { meal in
+							Button(action: {
+								// Button action can be added later
+							}) {
+								Text(meal)
+									.font(.headline)
+									.padding()
+									.frame(width: 100, height: 100) // Make boxes more square
+									.background(Color.white) // Background for meal box
+									.cornerRadius(10) // Rounded corners
+									.overlay(RoundedRectangle(cornerRadius: 10)
+										.stroke(Color.orange, lineWidth: 2)) // Orange outline
+									.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3) // Shadow effect
+							}
 						}
-						.padding()
-						.background(Color.white)
-						.cornerRadius(10)
-						.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3)
 					}
-					.sheet(isPresented: $showingProfile) {
-						ProfileView(showingProfile: $showingProfile) // Navigate to ProfileView
-					}
-
-					// Spacer to push content upwards
-					Spacer()
+					.padding()
 				}
-				.padding()
-				.frame(width: geometry.size.width, height: geometry.size.height) // Full view size
+				Spacer() // Push content upwards
 			}
+
 		}
 	}
 }
 
 // Preview for MyMealsView
 struct MyMealsView_Previews: PreviewProvider {
-	@State static var showingProfile: Bool = true // Static binding for preview
+	@State static var showingProfile: Bool = false // Static binding for preview
 
 	static var previews: some View {
 		MyMealsView(showingProfile: $showingProfile)
