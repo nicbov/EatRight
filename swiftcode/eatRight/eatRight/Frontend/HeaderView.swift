@@ -16,14 +16,24 @@ struct HeaderView: View {
 
 	var body: some View {
 		VStack {
-			// Background
-			Image("Image")
-				.resizable()
-				.scaledToFit()
-				.frame(height: 80) // Adjust height for the logo
-				.overlay(RoundedRectangle(cornerRadius: 10)
-					.stroke(Color.green, lineWidth: 2))
-				.padding(.top, 10)
+			ZStack {
+				// Background with seamless color transition
+				LinearGradient(gradient: Gradient(colors: [Color.green.opacity(0.7), Color.blue.opacity(0.3)]),
+							   startPoint: .topLeading, endPoint: .bottomTrailing)
+					.ignoresSafeArea(edges: .top)
+					.frame(height: 80) // Adjust height for the logo area
+
+				// Text logo overlaying the background
+				Text("Eat")
+					.font(.system(size: 36, weight: .bold, design: .serif))
+					.foregroundColor(Color.green.opacity(0.7)) // Muted green for "Eat"
+					+
+				Text("Right")
+					.font(.system(size: 36, weight: .bold, design: .serif))
+					.foregroundColor(Color.orange.opacity(0.7)) // Muted orange for "Right"
+					.italic() // Italicize "Right"
+
+			}
 
 			// Tabs HStack including Profile in one long box, with vertical separators
 			HStack(spacing: 0) {
@@ -77,6 +87,7 @@ struct HeaderView: View {
 			.shadow(radius: 5)
 
 			Divider()
+				.background(Color.green.opacity(0.7)) // Match the divider color to the background
 		}
 	}
 

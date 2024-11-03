@@ -10,119 +10,177 @@ struct HomeView: View {
 	@State private var carbs: Double = 100
 	@State private var fats: Double = 100
 	@State private var searchText: String = ""
-	@Binding var showingProfile: Bool // Binding for profile popup
-	@State private var showFilters: Bool = false // State for filter pop-up
-	@State private var showingMyMeals: Bool = false // State for My Meals view
-	var switchToFavorites: () -> Void // Callback to switch to Favorites
+	@Binding var showingProfile: Bool
+	@State private var showFilters: Bool = false
+	@State private var recipes: [Recipe] = []
+	@State private var isLoading: Bool = false
+	@State private var errorMessage: String?
+	@State private var selectedRecipeDetail: MealDetail? = nil
+	@State private var isDetailPresented: Bool = false
+	@State private var selectedRecipeTitle: String = ""
+
+	var switchToFavorites: () -> Void
+	private let recipeService = RecipeService()
 
 	var body: some View {
-		ZStack {
-			// Background with light green color and subtle 
+		NavigationView {
+			ZStack {
+				LinearGradient(gradient: Gradient(colors: [Color.green.opacity(0.6), Color.blue.opacity(0.3)]),
+							   startPoint: .topLeading, endPoint: .bottomTrailing)
+					.ignoresSafeArea()
 
-			GeometryReader { geometry in
-				VStack {
-					// Apply filters button
-					Button(action: {
-						showFilters.toggle() // Toggle filters
-					}) {
-						Text("Apply Filters")
-							.font(.subheadline) // Smaller font size
-							.padding(5) // Reduced padding
-							.background(Color.orange)
-							.foregroundColor(.white)
-							.cornerRadius(10)
-					}
-					.padding(.leading, 10) // Padding for left alignment
+				GeometryReader { geometry in
+					VStack {
+						HStack {
+							TextField("Search for recipes...", text: $searchText)
+								.textFieldStyle(RoundedBorderTextFieldStyle())
+								.frame(height: 50)
+								.padding(8)
+								.background(Color.white.opacity(0.9))
+								.cornerRadius(10)
+								.overlay(RoundedRectangle(cornerRadius: 10)
+											.stroke(Color.orange, lineWidth: 2))
+						}
+						.padding(.horizontal)
 
-					// Search bar
-					HStack {
-						TextField("Search for recipes...", text: $searchText)
-							.textFieldStyle(RoundedBorderTextFieldStyle())
-							.padding(.horizontal)
-							.frame(height: 50) // Increased height for the search bar
-					}
-					.padding(.top)
-
-					// Filter Sliders (only show when filters are active)
-					if showFilters {
-						createFilterSlider(label: "Protein", value: $protein)
-						createFilterSlider(label: "Carbs", value: $carbs)
-						createFilterSlider(label: "Fats", value: $fats)
-					}
-
-					// My Meals view (conditional)
-					if showingMyMeals {
-						VStack {
-							Text("My Meals")
-								.font(.largeTitle)
+						Button(action: {
+							fetchRecipes()
+						}) {
+							Text("Fetch Recipes")
+								.fontWeight(.bold)
 								.padding()
+								.frame(maxWidth: .infinity)
+								.background(Color.orange)
+								.foregroundColor(.white)
+								.cornerRadius(10)
+								.shadow(color: Color.gray.opacity(0.5), radius: 5, x: 0, y: 3)
+						}
+						.padding(.horizontal)
+						.padding(.bottom, 10)
 
-							// Example array for meals
-							let meals = ["Meal 1", "Meal 2", "Meal 3"] // Replace with actual meal data
+						Button(action: {
+							showFilters.toggle()
+						}) {
+							Text("Filters")
+								.fontWeight(.bold)
+								.padding()
+								.frame(maxWidth: .infinity)
+								.background(Color.white)
+								.foregroundColor(.orange)
+								.cornerRadius(10)
+								.overlay(RoundedRectangle(cornerRadius: 10)
+											.stroke(Color.orange, lineWidth: 2))
+								.shadow(color: Color.gray.opacity(0.5), radius: 5, x: 0, y: 3)
+						}
+						.padding(.horizontal)
+						.padding(.bottom, 10)
 
-							// Check if meals exist
-							if !meals.isEmpty {
-								ForEach(meals, id: \.self) { meal in
-									NavigationLink(destination: MealDetailView(mealName: meal)) {
-										Text(meal)
-											.font(.subheadline) // Smaller font size for meal names
-											.padding()
-											.background(Color.white)
-											.cornerRadius(10)
-											.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3)
+						if showFilters {
+							VStack(spacing: 10) {
+								createFilterSlider(label: "Protein", value: $protein)
+								createFilterSlider(label: "Carbs", value: $carbs)
+								createFilterSlider(label: "Fats", value: $fats)
+							}
+							.background(Color.white.opacity(0.9))
+							.cornerRadius(10)
+							.overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.orange, lineWidth: 2))
+							.padding(.bottom, 10)
+						}
+
+						if isLoading {
+							ProgressView("Loading recipes...")
+								.padding()
+								.foregroundColor(.orange)
+						} else if let errorMessage = errorMessage {
+							Text("Error: \(errorMessage)")
+								.foregroundColor(.red)
+								.padding()
+						} else {
+							VStack {
+								if !recipes.isEmpty {
+									ForEach(recipes) { recipe in
+										Button(action: {
+											fetchRecipeDetails(recipeId: recipe.id) { detail in
+												selectedRecipeDetail = detail
+												selectedRecipeTitle = recipe.title
+												print("Selected Recipe: \(selectedRecipeTitle)") // Debugging
+												isDetailPresented = true
+											}
+										}) {
+											Text(recipe.title)
+												.fontWeight(.bold)
+												.padding()
+												.frame(maxWidth: .infinity)
+												.background(Color.white)
+												.foregroundColor(.orange)
+												.cornerRadius(10)
+												.overlay(RoundedRectangle(cornerRadius: 10)
+															.stroke(Color.orange, lineWidth: 2))
+												.shadow(color: Color.gray.opacity(0.5), radius: 5, x: 0, y: 3)
+										}
+										.padding(.horizontal)
 									}
-									.padding(.bottom)
+								} else {
+									Text("No recipes found.")
+										.padding()
+										.foregroundColor(.gray)
 								}
-							} else {
-								Text("No Selected Meals")
-									.font(.headline)
-									.foregroundColor(.gray)
 							}
 						}
-						.padding()
-						.frame(maxWidth: geometry.size.width * 0.25) // Limit width to left 1/4 of the screen
-						.padding(.top, 10) // Space above My Meals section
 					}
-
-					Spacer() // Add space to push content up
+					.padding(.top, 10)
 				}
-				.padding(.horizontal) // Add padding to the edges
+			}
+		}
+		.background(NavigationLink(destination: MealDetailView(mealDetail: selectedRecipeDetail, mealTitle: selectedRecipeTitle), isActive: $isDetailPresented) { EmptyView() })
+	}
+
+	private func fetchRecipes() {
+		isLoading = true
+		recipeService.fetchRecipes(dish: searchText, cuisine: nil, diet: nil, intolerance: nil) { result in
+			DispatchQueue.main.async {
+				isLoading = false
+				switch result {
+				case .success(let fetchedRecipes):
+					recipes = fetchedRecipes
+					errorMessage = nil
+				case .failure(let error):
+					errorMessage = error.localizedDescription
+				}
 			}
 		}
 	}
 
-	// Helper function to create tab buttons
-	private func createTabButton(title: String, action: @escaping () -> Void) -> some View {
-		Button(title) {
-			action()
+	private func fetchRecipeDetails(recipeId: Int, completion: @escaping (MealDetail) -> Void) {
+		recipeService.fetchRecipeDetails(recipeId: recipeId) { result in
+			switch result {
+			case .success(let detail):
+				completion(detail)
+			case .failure(let error):
+				print("Failed to fetch recipe details: \(error.localizedDescription)")
+			}
 		}
-		.font(.headline)
-		.frame(maxWidth: .infinity)
-		.padding()
-		.foregroundColor(.green)
-		.background(Color.white)
-		.cornerRadius(5)
 	}
 
-	// Helper function to create filter sliders
 	private func createFilterSlider(label: String, value: Binding<Double>) -> some View {
-		VStack(alignment: .leading) {
-			Text("\(label): \(Int(value.wrappedValue))g")
-			Slider(value: value, in: 0...100, step: 1)
-				.accentColor(.orange)
+		HStack {
+			Text(label)
+			Slider(value: value, in: 0...500, step: 1)
+			Text("\(Int(value.wrappedValue))")
 		}
 		.padding()
+		.background(Color.white.opacity(0.8))
+		.cornerRadius(10)
+		.overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.orange, lineWidth: 2))
 	}
 }
 
 // Preview for HomeView
 struct HomeView_Previews: PreviewProvider {
-	@State static var showingProfile: Bool = false // Static binding for preview
+	@State static var showingProfile = false
 
 	static var previews: some View {
-		HomeView(showingProfile: $showingProfile, switchToFavorites: {
-			print("Switching to Favorites") // Preview action
-		})
-		.previewLayout(.sizeThatFits)
+		HomeView(showingProfile: $showingProfile, switchToFavorites: {})
+			.preferredColorScheme(.light)
 	}
 }
