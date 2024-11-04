@@ -3,6 +3,11 @@
 //  eatRight
 //
 //  Created by Nicolas Boving on 10/3/24.
+//
+//  HomeView.swift
+//  eatRight
+//
+//  Created by Nicolas Boving on 10/3/24.
 import SwiftUI
 
 struct HomeView: View {
@@ -99,14 +104,13 @@ struct HomeView: View {
 							VStack {
 								if !recipes.isEmpty {
 									ForEach(recipes) { recipe in
-										Button(action: {
-											fetchRecipeDetails(recipeId: recipe.id) { detail in
-												selectedRecipeDetail = detail
-												selectedRecipeTitle = recipe.title
-												print("Selected Recipe: \(selectedRecipeTitle)") // Debugging
-												isDetailPresented = true
-											}
-										}) {
+										NavigationLink(destination: MealDetailView(mealDetail: selectedRecipeDetail, mealTitle: selectedRecipeTitle)
+											.onAppear {
+												fetchRecipeDetails(recipeId: recipe.id) { detail in
+													selectedRecipeDetail = detail
+													selectedRecipeTitle = recipe.title
+												}
+											}) {
 											Text(recipe.title)
 												.fontWeight(.bold)
 												.padding()
@@ -132,7 +136,6 @@ struct HomeView: View {
 				}
 			}
 		}
-		.background(NavigationLink(destination: MealDetailView(mealDetail: selectedRecipeDetail, mealTitle: selectedRecipeTitle), isActive: $isDetailPresented) { EmptyView() })
 	}
 
 	private func fetchRecipes() {

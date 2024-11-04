@@ -24,6 +24,7 @@ struct ContentView: View {
 	@State private var showingProfile = false // State for profile view
 	@State private var showingMyMeals = false // State for My Meals view
 
+
 	var body: some View {
 		VStack {
 			switch appState {

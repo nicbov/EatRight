@@ -34,9 +34,17 @@ class Recipe:
         if price_data:
             price_info = [{'Name': ing['name'], 'Amount': ing['amount']['us']['value'], 'Price': ing['price']} for ing in price_data['ingredients']]
             self.price_info = pd.DataFrame(price_info)
+            total_cost = price_data.get('totalCost', 0)
+            total_cost_per_serving = price_data.get('totalCostPerServing', 0)
+
+            self.price_info = pd.concat([
+            self.price_info,
+            pd.DataFrame([{'Name': 'Total Cost', 'Amount': '', 'Price': total_cost}]),
+            pd.DataFrame([{'Name': 'Cost per Serving', 'Amount': '', 'Price': total_cost_per_serving}])
+            ], ignore_index=True)
         else:
             self.price_info = pd.DataFrame()
-
+        
 
     def fetch_instructions(self):
         instructions_data = self.spoon_service.get_instructions(self.recipe_id)
