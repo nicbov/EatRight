@@ -1,49 +1,79 @@
-//
 //  MealDetailView.swift
 //  eatRight
 //
 //  Created by Nicolas Boving on 10/13/24.
-//
 import SwiftUI
 
 struct MealDetailView: View {
-	var mealDetail: MealDetail? // The detail information about the meal
-	var mealTitle: String // The title of the meal
+	var mealDetail: MealDetail?
+	var mealTitle: String
 
 	var body: some View {
-		VStack {
-			if let detail = mealDetail {
-				List {
-					Section(header: Text("Instructions")) {
-						ForEach(detail.instructions_info) { instruction in
-							Text("\(instruction.Step): \(instruction.Instruction)")
-						}
-					}
+		ScrollView {
+			VStack(alignment: .leading, spacing: 20) {
+				Text(mealTitle)
+					.font(.largeTitle)
+					.fontWeight(.bold)
+					.padding(.bottom, 10)
 
-					Section(header: Text("Nutrition Info")) {
-						ForEach(detail.nutrition_info) { nutrition in
-							Text("\(nutrition.NutritionMetric): \(nutrition.Value)")
-						}
-					}
-
-					Section(header: Text("Price Info")) {
-						ForEach(detail.price_info) { price in
-							Text("\(price.Name): $\(String(format: "%.2f", price.Price))")
-						}
-					}
-
-					Section(header: Text("Taste Info")) {
-						ForEach(detail.taste_info) { taste in
-							Text("\(taste.TasteMetric): \(taste.Value)")
-						}
-					}
+				if let instructions = mealDetail?.instructionsInfo {
+					SectionView(title: "Instructions", content: instructions.enumerated().map { "\($0.offset + 1). \($0.element.instruction)" })
 				}
-				.navigationTitle(mealTitle) // Set the navigation title to the meal title
-			} else {
-				Text("Loading...").onAppear {
-					print("MealDetailView loading for \(mealTitle)") // Debugging
+
+				if let nutrition = mealDetail?.nutritionInfo {
+					SectionView(title: "Nutrition", content: nutrition.map { "\($0.nutritionMetric): \($0.value)" })
+				}
+
+				if let price = mealDetail?.priceInfo {
+					SectionView(title: "Price Info", content: price.map { "\($0.amount) \($0.name) - $\(String(format: "%.2f", $0.price / 100))" })
+				}
+
+				if let totalCost = mealDetail?.totalCost, let costPerServing = mealDetail?.totalCostPerServing {
+					VStack(alignment: .leading, spacing: 5) {
+						Text("Total Cost: $\(String(format: "%.2f", Double(totalCost) / 100))")
+							.font(.title2)
+							.fontWeight(.bold)
+
+						Text("Cost per Serving: $\(String(format: "%.2f", Double(costPerServing) / 100))")
+							.font(.title2)
+							.fontWeight(.bold)
+					}
+					.padding(.top, 10)
+				}
+
+				if let taste = mealDetail?.tasteInfo {
+					SectionView(title: "Taste Profile", content: taste.map { "\($0.tasteMetric): \(String(format: "%.1f", $0.value))" })
 				}
 			}
+			.padding()
+			.navigationTitle("Recipe Details")
+			.navigationBarTitleDisplayMode(.inline)
 		}
+	}
+}
+
+struct SectionView: View {
+	var title: String
+	var content: [String]
+
+	var body: some View {
+		VStack(alignment: .leading) {
+			Text(title)
+				.font(.title2)
+				.fontWeight(.bold)
+				.padding(.bottom, 5)
+
+			ForEach(content, id: \.self) { item in
+				Text(item)
+					.padding(5)
+					.background(Color.gray.opacity(0.1))
+					.cornerRadius(5)
+			}
+		}
+		.padding(.vertical)
+		.padding(.horizontal)
+		.background(Color.white)
+		.cornerRadius(10)
+		.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3)
 	}
 }
