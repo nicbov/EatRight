@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,29 +23,28 @@ import com.eatright.ui.theme.EatRightTheme
 
 
 @Composable
-fun Startup(modifier: Modifier = Modifier) { Column(
-    modifier = modifier.fillMaxSize(),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center,
-) {
-    Image(
-        painter = painterResource(id = R.drawable.eatright_logo),
-        contentDescription = stringResource(id = R.string.eatright_logo_desc),
-        modifier
-            .width(250.dp)
-            .height(250.dp),
-    )
-    CircularProgressIndicator(
-        color = Color.Green,
-        strokeWidth = 8.dp,
-        modifier = modifier,
-    )
-    Text(
-        text = "CopyRight 2024",
-        textAlign = TextAlign.Center,
-        modifier = modifier,
-    )
-}
+fun Startup(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.eatright_logo),
+            contentDescription = stringResource(id = R.string.eatright_logo_desc),
+            Modifier
+                .width(250.dp)
+                .height(250.dp),
+        )
+        CircularProgressIndicator(
+            color = MaterialTheme.colorScheme.secondary,
+            strokeWidth = 8.dp,
+        )
+        Text(
+            text = "CopyRight 2024",
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 @Preview(showBackground = true)
