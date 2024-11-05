@@ -13,9 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
@@ -29,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -50,6 +53,7 @@ class HomeViewModel : ViewModel() {
     var protein by mutableStateOf(100.0f)
     var carbs by mutableStateOf(100.0f)
     var fats by mutableStateOf(100.0f)
+    var recipes by mutableStateOf(emptyList<Recipe>())
 }
 
 @Serializable
@@ -64,10 +68,11 @@ fun Home(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(innerPadding)
+            .padding(innerPadding),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
-            RecipeSearchSection()
+            RecipeSearchSection(viewModel)
         }
         item {
             FilterSection(
@@ -76,13 +81,28 @@ fun Home(
                 onFilterButtonClick = { viewModel.filterVisible = !viewModel.filterVisible },
             )
         }
+        items(viewModel.recipes) { recipe ->
+            ElevatedCard(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .padding(10.dp),
+            ) {
+                Text(
+                    text = recipe.title,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(5.dp).fillMaxWidth(),
+                )
+            }
+        }
     }
 }
 
 @Composable
-private fun RecipeSearchSection() {
+private fun RecipeSearchSection(
+    viewModel: HomeViewModel,
+) {
     var text by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false)}
+    var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val client = remember {
         HttpClient(CIO) {
@@ -118,13 +138,16 @@ private fun RecipeSearchSection() {
                     // For development.  This IP is owned by the Android simulator's host, where we
                     // expect to be running the backend.
                     val eatRightBackendAddress = "10.0.2.2:3000"
-                    val recipes: List<Recipe> =
+                    viewModel.recipes =
                         client.get("http://${eatRightBackendAddress}/search_recipes") {
                             url {
                                 parameters.append("dish", text)
                             }
                         }.body()
-                    Log.i(null, "Search results: ${recipes.count()} recipes: ${recipes}")
+                    Log.i(
+                        null,
+                        "Search results: ${viewModel.recipes.count()} recipes: ${viewModel.recipes}"
+                    )
                     isLoading = false
                 }
             },
@@ -132,7 +155,7 @@ private fun RecipeSearchSection() {
                 .fillMaxWidth()
                 .padding(top = 16.dp),
             enabled = text.isNotEmpty() && !isLoading,
-            ) {
+        ) {
             if (isLoading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.onPrimary,
