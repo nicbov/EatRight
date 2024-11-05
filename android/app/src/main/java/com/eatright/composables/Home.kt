@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +33,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eatright.ui.theme.EatRightTheme
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.get
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
 
 class HomeViewModel : ViewModel() {
@@ -40,6 +50,9 @@ class HomeViewModel : ViewModel() {
     var carbs by mutableStateOf(100.0f)
     var fats by mutableStateOf(100.0f)
 }
+
+@Serializable
+data class Recipe(val id: Int, val title: String)
 
 @Composable
 fun Home(
@@ -70,6 +83,8 @@ private fun RecipeSearchSection() {
     var text by remember {
         mutableStateOf("")
     }
+    val scope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,6 +100,30 @@ private fun RecipeSearchSection() {
         Button(
             onClick = {
                 Log.i(null, "Search for recipes containing ${text}")
+
+                scope.launch {
+                    // TODO(seb): reuse client across requests
+                    val client = HttpClient(CIO) {
+                        expectSuccess = true
+                        install(Logging)
+                        install(ContentNegotiation) {
+                            json()
+                        }
+                    }
+
+                    // For development.  This IP is owned by the Android simulator's host, where we
+                    // expect to be running the backend.
+                    val eatRightBackendAddress = "10.0.2.2:3000"
+                    val recipes: List<Recipe> =
+                        client.get("http://${eatRightBackendAddress}/search_recipes"){
+                            url {
+                                parameters.append("dish", text)
+                            }
+                        }.body()
+
+                    Log.i(null, "Search results: ${recipes.count()} recipes: ${recipes}")
+                    client.close()
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
