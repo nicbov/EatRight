@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +58,8 @@ fun Login(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var showAlert by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -109,7 +112,7 @@ fun Login(
                     onClick = {
                         isLoading = true
 
-                        viewModel.viewModelScope.launch {
+                        scope.launch {
                             delay(2000); // fake delay representing evt. network delay
                             isLoading = false
                             if (viewModel.username.lowercase() == "test" && viewModel.password.lowercase() == "password") {
