@@ -84,6 +84,15 @@ private fun RecipeSearchSection() {
         mutableStateOf("")
     }
     val scope = rememberCoroutineScope()
+    val client = remember {
+        HttpClient(CIO) {
+            expectSuccess = true
+            install(Logging)
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -102,14 +111,6 @@ private fun RecipeSearchSection() {
                 Log.i(null, "Search for recipes containing ${text}")
 
                 scope.launch {
-                    // TODO(seb): reuse client across requests
-                    val client = HttpClient(CIO) {
-                        expectSuccess = true
-                        install(Logging)
-                        install(ContentNegotiation) {
-                            json()
-                        }
-                    }
 
                     // For development.  This IP is owned by the Android simulator's host, where we
                     // expect to be running the backend.
