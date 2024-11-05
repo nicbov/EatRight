@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
@@ -80,9 +81,8 @@ fun Home(
 
 @Composable
 private fun RecipeSearchSection() {
-    var text by remember {
-        mutableStateOf("")
-    }
+    var text by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false)}
     val scope = rememberCoroutineScope()
     val client = remember {
         HttpClient(CIO) {
@@ -109,28 +109,38 @@ private fun RecipeSearchSection() {
         Button(
             onClick = {
                 Log.i(null, "Search for recipes containing ${text}")
+                isLoading = true
 
                 scope.launch {
+                    // TODO(seb): timeout request
+                    // TODO(seb): error handling: on exception, display error dialog, don't crash
 
                     // For development.  This IP is owned by the Android simulator's host, where we
                     // expect to be running the backend.
                     val eatRightBackendAddress = "10.0.2.2:3000"
                     val recipes: List<Recipe> =
-                        client.get("http://${eatRightBackendAddress}/search_recipes"){
+                        client.get("http://${eatRightBackendAddress}/search_recipes") {
                             url {
                                 parameters.append("dish", text)
                             }
                         }.body()
-
                     Log.i(null, "Search results: ${recipes.count()} recipes: ${recipes}")
-                    client.close()
+                    isLoading = false
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("Fetch Recipes")
+                .padding(top = 16.dp),
+            enabled = text.isNotEmpty() && !isLoading,
+            ) {
+            if (isLoading) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 8.dp,
+                )
+            } else {
+                Text("Fetch Recipes")
+            }
         }
     }
 }
