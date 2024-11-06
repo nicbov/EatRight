@@ -1,6 +1,10 @@
 xcuserdata/
 .DS_Store
 
+# vim
+*~
+*.swp
+*.swo
 
 # BEGIN - https://github.com/github/gitignore/blob/main/Python.gitignore
 # Byte-compiled / optimized / DLL files
