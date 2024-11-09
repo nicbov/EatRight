@@ -52,12 +52,16 @@ struct Instruction: Identifiable, Decodable {
 
 struct Nutrition: Identifiable, Decodable {
 	let id = UUID()
-	let nutritionMetric: String
-	let value: String
+	let name: String
+	let amount: Double
+	let unit: String
+	let percentOfDailyNeeds: Double
 
 	private enum CodingKeys: String, CodingKey {
-		case nutritionMetric = "Nutrition Metric"
-		case value = "Value"
+		case name
+		case amount
+		case unit
+		case percentOfDailyNeeds = "percentOfDailyNeeds"
 	}
 }
 

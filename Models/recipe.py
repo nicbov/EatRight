@@ -19,14 +19,14 @@ class Recipe:
         else:
             self.taste_info = pd.DataFrame()
 
-
     def fetch_nutrition(self):
         nutrition_data = self.spoon_service.get_nutrition(self.recipe_id)
-        if nutrition_data:
-            self.nutrition_info = pd.DataFrame(nutrition_data.items(), columns=['Nutrition Metric', 'Value'])
+        if nutrition_data and "nutrients" in nutrition_data:
+            nutrients = nutrition_data["nutrients"]
+        
+            self.nutrition_info = pd.DataFrame(nutrients)
         else:
             self.nutrition_info = pd.DataFrame()
-
 
 
     def fetch_price(self):

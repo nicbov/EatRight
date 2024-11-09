@@ -15,13 +15,14 @@ struct MealDetailView: View {
 					.font(.largeTitle)
 					.fontWeight(.bold)
 					.padding(.bottom, 10)
-
+					.foregroundColor(.white)
+				
 				if let instructions = mealDetail?.instructionsInfo {
 					SectionView(title: "Instructions", content: instructions.enumerated().map { "\($0.offset + 1). \($0.element.instruction)" })
 				}
 
 				if let nutrition = mealDetail?.nutritionInfo {
-					SectionView(title: "Nutrition", content: nutrition.map { "\($0.nutritionMetric): \($0.value)" })
+					SectionView(title: "Nutrition", content: nutrition.map { formatNutritionInfo(nutrition: $0) })
 				}
 
 				if let price = mealDetail?.priceInfo {
@@ -33,10 +34,12 @@ struct MealDetailView: View {
 						Text("Total Cost: $\(String(format: "%.2f", Double(totalCost) / 100))")
 							.font(.title2)
 							.fontWeight(.bold)
+							.foregroundColor(.white)
 
 						Text("Cost per Serving: $\(String(format: "%.2f", Double(costPerServing) / 100))")
 							.font(.title2)
 							.fontWeight(.bold)
+							.foregroundColor(.white)
 					}
 					.padding(.top, 10)
 				}
@@ -46,11 +49,19 @@ struct MealDetailView: View {
 				}
 			}
 			.padding()
-			.navigationTitle("Recipe Details")
-			.navigationBarTitleDisplayMode(.inline)
 		}
+		.background(Color.black.ignoresSafeArea()) // Background should be black
+		.navigationTitle("Recipe Details")
+		.navigationBarTitleDisplayMode(.inline)
+		.navigationBarHidden(true)
+	}
+
+	// Helper function to format nutrition information
+	private func formatNutritionInfo(nutrition: Nutrition) -> String {
+		return "\(nutrition.name) (\(nutrition.unit)): \(nutrition.amount)"
 	}
 }
+
 
 struct SectionView: View {
 	var title: String
@@ -62,17 +73,19 @@ struct SectionView: View {
 				.font(.title2)
 				.fontWeight(.bold)
 				.padding(.bottom, 5)
+				.foregroundColor(.white)  // Title in white
 
 			ForEach(content, id: \.self) { item in
 				Text(item)
 					.padding(5)
-					.background(Color.gray.opacity(0.1))
+					.background(Color.white.opacity(0.1))
 					.cornerRadius(5)
+					.foregroundColor(.white)  // Text in white
 			}
 		}
 		.padding(.vertical)
 		.padding(.horizontal)
-		.background(Color.white)
+		.background(Color.white.opacity(0.1)) // Transparent background
 		.cornerRadius(10)
 		.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3)
 	}

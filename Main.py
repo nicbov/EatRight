@@ -90,7 +90,7 @@ def get_recipe_details(recipe_id):
     # Construct a response with all the available details
     details = {
         'taste_info': recipe.taste_info.to_dict(orient='records'),  # Return taste info
-        'nutrition_info': recipe.nutrition_info.to_dict(orient='records')[:4],  # Limit to first 4 nutrition items
+        'nutrition_info': recipe.nutrition_info.to_dict(orient='records'),  #[:4] Limit to first 4 nutrition items
         'price_info': recipe.price_info.to_dict(orient='records'),  # Return price info
         'instructions_info': recipe.instructions_info.to_dict(orient='records')  # Return all instructions
     }
