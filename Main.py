@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flaskext.mysql import MySQL
 
 import flask_mysqldb
@@ -7,6 +7,8 @@ from Services.reccomendation_model import RecommendationModel  # Add this line
 
 from Services.spoonacular_service import SpoonacularService
 from Models.recipe import Recipe
+from io import BytesIO
+from Backend.Charts import makeChart
 
 app = Flask(__name__)
 
@@ -89,20 +91,35 @@ def get_recipe_details(recipe_id):
 
     # Construct a response with all the available details
     details = {
-        'taste_info': recipe.taste_info.to_dict(orient='records'),
-        'nutrition_info': recipe.nutrition_info.to_dict(orient='records'),
-        'price_info': recipe.price_info.to_dict(orient='records'),
-        'instructions_info': recipe.instructions_info.to_dict(orient='records')
+        'taste_info': recipe.taste_info.to_dict(orient='records'),  # Return taste info
+        'nutrition_info': recipe.nutrition_info.to_dict(orient='records'),  #[:4] Limit to first 4 nutrition items
+        'price_info': recipe.price_info.to_dict(orient='records'),  # Return price info
+        'instructions_info': recipe.instructions_info.to_dict(orient='records')  # Return all instructions
     }
-
     return jsonify(details), 200
 @app.route('/recommend', methods=['POST'])
 def recommend_recipes():
     recipe_ids = request.json.get('recipe_ids', [])
     model = RecommendationModel()
     recommendations = model.get_taste_info(recipe_ids)
-    return jsonify(recommendations), 200
+    return jsonify(recommendations), 200 
 
+
+@app.route('/taste_chart', methods=['POST'])
+def taste_chart():
+    # Parse incoming JSON data
+    data = request.get_json()
+    
+    # Extract labels and values from taste_info
+    taste_info = data.get("taste_info", [])
+    labels = [item["Taste Metric"] for item in taste_info]
+    values = [item["Value"] for item in taste_info]
+    
+    # Generate the radar chart and get SVG bytes in memory
+    img_bytes = makeChart(labels, values)
+    
+    # Return the SVG image as a response
+    return send_file(img_bytes, mimetype='image/svg+xml')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=3000)
