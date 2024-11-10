@@ -2,7 +2,6 @@
 //  eatRight
 //
 //  Created by Nicolas Boving on 10/13/24.
-
 import SwiftUI
 import WebKit
 
@@ -10,7 +9,30 @@ struct MealDetailView: View {
 	var mealDetail: MealDetail?
 	var mealTitle: String
 	
+	struct SectionView: View {
+	 var title: String
+	 var content: [String]
+
+	 var body: some View {
+		 VStack(alignment: .leading, spacing: 10) {
+			 Text(title)
+				 .font(.title2)
+				 .fontWeight(.bold)
+				 .foregroundColor(Color.white)
+				 .padding(.bottom, 5)
+
+			 ForEach(content, id: \.self) { item in
+				 Text(item)
+					 .font(.body)
+					 .foregroundColor(Color.white)
+			 }
+		 }
+		 .padding(.bottom, 15)
+	 }
+ }
+	
 	@State private var svgData: Data?  // State to hold SVG data
+	@State private var showSpicyPepper: Bool = false  // State to track if a spicy pepper should be displayed
 
 	var body: some View {
 		ScrollView {
@@ -47,6 +69,17 @@ struct MealDetailView: View {
 					.padding(.top, 10)
 				}
 
+				// Display a pepper icon if the spicyness is above 500
+				if showSpicyPepper {
+					Image(systemName: "flame.fill")
+						.resizable()
+						.scaledToFit()
+						.frame(width: 50, height: 50)
+						.foregroundColor(.red)
+						.padding(.top, 10)
+						.overlay(Text("Spicy!").foregroundColor(.red).font(.caption), alignment: .bottom)
+				}
+
 				// New section to load and display SVG for taste info
 				if let tasteInfo = mealDetail?.tasteInfo {
 					SVGView(svgData: $svgData)  // Display SVG if available
@@ -64,6 +97,11 @@ struct MealDetailView: View {
 	}
 
 	private func loadTasteChart(tasteInfo: [Taste]) {
+		// Check for spicy value and show the red pepper icon if needed
+		if let spicy = tasteInfo.first(where: { $0.tasteMetric == "spiciness" })?.value, spicy > 500 {
+			showSpicyPepper = true
+		}
+
 		let tasteInfoDict = tasteInfo.map { ["Taste Metric": $0.tasteMetric, "Value": $0.value] }
 		
 		RecipeService().fetchTasteChart(tasteInfo: tasteInfoDict) { result in
@@ -91,37 +129,10 @@ struct SVGView: UIViewRepresentable {
 		return webView
 	}
 
-	func updateUIView(_ webView: WKWebView, context: Context) {
-		if let svgData = svgData, let svgString = String(data: svgData, encoding: .utf8) {
-			webView.loadHTMLString(svgString, baseURL: nil)
+	func updateUIView(_ uiView: WKWebView, context: Context) {
+		if let data = svgData {
+			uiView.load(data, mimeType: "image/svg+xml", characterEncodingName: "utf-8", baseURL: URL(string: "https://www.example.com")!)
 		}
 	}
 }
 
-struct SectionView: View {
-	var title: String
-	var content: [String]
-
-	var body: some View {
-		VStack(alignment: .leading) {
-			Text(title)
-				.font(.title2)
-				.fontWeight(.bold)
-				.padding(.bottom, 5)
-				.foregroundColor(.white)
-
-			ForEach(content, id: \.self) { item in
-				Text(item)
-					.padding(5)
-					.background(Color.white.opacity(0.1))
-					.cornerRadius(5)
-					.foregroundColor(.white)
-			}
-		}
-		.padding(.vertical)
-		.padding(.horizontal)
-		.background(Color.white.opacity(0.1))
-		.cornerRadius(10)
-		.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3)
-	}
-}
