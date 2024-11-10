@@ -2,11 +2,15 @@
 //  eatRight
 //
 //  Created by Nicolas Boving on 10/13/24.
+
 import SwiftUI
+import WebKit
 
 struct MealDetailView: View {
 	var mealDetail: MealDetail?
 	var mealTitle: String
+	
+	@State private var svgData: Data?  // State to hold SVG data
 
 	var body: some View {
 		ScrollView {
@@ -15,7 +19,6 @@ struct MealDetailView: View {
 					.font(.largeTitle)
 					.fontWeight(.bold)
 					.padding(.bottom, 10)
-					.foregroundColor(.white)
 				
 				if let instructions = mealDetail?.instructionsInfo {
 					SectionView(title: "Instructions", content: instructions.enumerated().map { "\($0.offset + 1). \($0.element.instruction)" })
@@ -34,34 +37,66 @@ struct MealDetailView: View {
 						Text("Total Cost: $\(String(format: "%.2f", Double(totalCost) / 100))")
 							.font(.title2)
 							.fontWeight(.bold)
-							.foregroundColor(.white)
+							.foregroundColor(Color.white)
 
 						Text("Cost per Serving: $\(String(format: "%.2f", Double(costPerServing) / 100))")
 							.font(.title2)
 							.fontWeight(.bold)
-							.foregroundColor(.white)
+							.foregroundColor(Color.white)
 					}
 					.padding(.top, 10)
 				}
 
-				if let taste = mealDetail?.tasteInfo {
-					SectionView(title: "Taste Profile", content: taste.map { "\($0.tasteMetric): \(String(format: "%.1f", $0.value))" })
+				// New section to load and display SVG for taste info
+				if let tasteInfo = mealDetail?.tasteInfo {
+					SVGView(svgData: $svgData)  // Display SVG if available
+						.frame(width: 300, height: 300)
+						.onAppear {
+							loadTasteChart(tasteInfo: tasteInfo)
+						}
 				}
 			}
 			.padding()
 		}
-		.background(Color.black.ignoresSafeArea()) // Background should be black
+		.background(Color.black.ignoresSafeArea())
 		.navigationTitle("Recipe Details")
 		.navigationBarTitleDisplayMode(.inline)
-		.navigationBarHidden(true)
 	}
 
-	// Helper function to format nutrition information
+	private func loadTasteChart(tasteInfo: [Taste]) {
+		let tasteInfoDict = tasteInfo.map { ["Taste Metric": $0.tasteMetric, "Value": $0.value] }
+		
+		RecipeService().fetchTasteChart(tasteInfo: tasteInfoDict) { result in
+			switch result {
+			case .success(let data):
+				svgData = data
+			case .failure(let error):
+				print("Error fetching SVG: \(error)")
+			}
+		}
+	}
+
 	private func formatNutritionInfo(nutrition: Nutrition) -> String {
 		return "\(nutrition.name) (\(nutrition.unit)): \(nutrition.amount)"
 	}
 }
 
+struct SVGView: UIViewRepresentable {
+	@Binding var svgData: Data?
+
+	func makeUIView(context: Context) -> WKWebView {
+		let webView = WKWebView()
+		webView.isOpaque = false
+		webView.backgroundColor = .clear
+		return webView
+	}
+
+	func updateUIView(_ webView: WKWebView, context: Context) {
+		if let svgData = svgData, let svgString = String(data: svgData, encoding: .utf8) {
+			webView.loadHTMLString(svgString, baseURL: nil)
+		}
+	}
+}
 
 struct SectionView: View {
 	var title: String
@@ -73,19 +108,19 @@ struct SectionView: View {
 				.font(.title2)
 				.fontWeight(.bold)
 				.padding(.bottom, 5)
-				.foregroundColor(.white)  // Title in white
+				.foregroundColor(.white)
 
 			ForEach(content, id: \.self) { item in
 				Text(item)
 					.padding(5)
 					.background(Color.white.opacity(0.1))
 					.cornerRadius(5)
-					.foregroundColor(.white)  // Text in white
+					.foregroundColor(.white)
 			}
 		}
 		.padding(.vertical)
 		.padding(.horizontal)
-		.background(Color.white.opacity(0.1)) // Transparent background
+		.background(Color.white.opacity(0.1))
 		.cornerRadius(10)
 		.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3)
 	}
