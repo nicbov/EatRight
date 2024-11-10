@@ -1,0 +1,246 @@
+{
+  "ingredients": [
+    {
+      "name": "canned tomatoes",
+      "image": "tomatoes-canned.png",
+      "price": 194.4,
+      "amount": {
+        "metric": {
+          "value": 907.185,
+          "unit": "g"
+        },
+        "us": {
+          "value": 2.0,
+          "unit": "pounds"
+        }
+      }
+    },
+    {
+      "name": "cooked shredded chicken breast halves",
+      "image": "rotisserie-chicken.png",
+      "price": 226.34,
+      "amount": {
+        "metric": {
+          "value": 453.592,
+          "unit": "g"
+        },
+        "us": {
+          "value": 1.0,
+          "unit": "pound"
+        }
+      }
+    },
+    {
+      "name": "dried basil",
+      "image": "basil.jpg",
+      "price": 153.64,
+      "amount": {
+        "metric": {
+          "value": 18.0,
+          "unit": "servings"
+        },
+        "us": {
+          "value": 18.0,
+          "unit": "servings"
+        }
+      }
+    },
+    {
+      "name": "egg",
+      "image": "egg.png",
+      "price": 24.0,
+      "amount": {
+        "metric": {
+          "value": 1.0,
+          "unit": ""
+        },
+        "us": {
+          "value": 1.0,
+          "unit": ""
+        }
+      }
+    },
+    {
+      "name": "fresh basil",
+      "image": "fresh-basil.jpg",
+      "price": 15.71,
+      "amount": {
+        "metric": {
+          "value": 2.0,
+          "unit": "Tbsps"
+        },
+        "us": {
+          "value": 2.0,
+          "unit": "Tbsps"
+        }
+      }
+    },
+    {
+      "name": "garlic",
+      "image": "garlic.png",
+      "price": 6.67,
+      "amount": {
+        "metric": {
+          "value": 1.0,
+          "unit": "clove"
+        },
+        "us": {
+          "value": 1.0,
+          "unit": "clove"
+        }
+      }
+    },
+    {
+      "name": "garlic clove",
+      "image": "garlic.jpg",
+      "price": 6.67,
+      "amount": {
+        "metric": {
+          "value": 1.0,
+          "unit": ""
+        },
+        "us": {
+          "value": 1.0,
+          "unit": ""
+        }
+      }
+    },
+    {
+      "name": "black salt and ground pepper",
+      "image": "pepper.jpg",
+      "price": 5.4,
+      "amount": {
+        "metric": {
+          "value": 18.0,
+          "unit": "servings"
+        },
+        "us": {
+          "value": 18.0,
+          "unit": "servings"
+        }
+      }
+    },
+    {
+      "name": "milk",
+      "image": "milk.png",
+      "price": 40.0,
+      "amount": {
+        "metric": {
+          "value": 236.0,
+          "unit": "ml"
+        },
+        "us": {
+          "value": 1.0,
+          "unit": "cup"
+        }
+      }
+    },
+    {
+      "name": "olive oil",
+      "image": "olive-oil.jpg",
+      "price": 50.03,
+      "amount": {
+        "metric": {
+          "value": 3.0,
+          "unit": "Tbsps"
+        },
+        "us": {
+          "value": 3.0,
+          "unit": "Tbsps"
+        }
+      }
+    },
+    {
+      "name": "onion",
+      "image": "brown-onion.png",
+      "price": 24.2,
+      "amount": {
+        "metric": {
+          "value": 1.0,
+          "unit": ""
+        },
+        "us": {
+          "value": 1.0,
+          "unit": ""
+        }
+      }
+    },
+    {
+      "name": "diced pancetta",
+      "image": "pancetta.png",
+      "price": 340.19,
+      "amount": {
+        "metric": {
+          "value": 85.049,
+          "unit": "g"
+        },
+        "us": {
+          "value": 3.0,
+          "unit": "ounces"
+        }
+      }
+    },
+    {
+      "name": "parmesan cheese",
+      "image": "parmesan.jpg",
+      "price": 10.54,
+      "amount": {
+        "metric": {
+          "value": 1.0,
+          "unit": "Tbsp"
+        },
+        "us": {
+          "value": 1.0,
+          "unit": "Tbsp"
+        }
+      }
+    },
+    {
+      "name": "spaghetti squash",
+      "image": "spaghetti-squash.jpg",
+      "price": 319.72,
+      "amount": {
+        "metric": {
+          "value": 1.0,
+          "unit": ""
+        },
+        "us": {
+          "value": 1.0,
+          "unit": ""
+        }
+      }
+    },
+    {
+      "name": "tomato paste",
+      "image": "tomato-paste.jpg",
+      "price": 6.29,
+      "amount": {
+        "metric": {
+          "value": 1.0,
+          "unit": "Tbsp"
+        },
+        "us": {
+          "value": 1.0,
+          "unit": "Tbsp"
+        }
+      }
+    },
+    {
+      "name": "white bread",
+      "image": "white-bread.jpg",
+      "price": 32.14,
+      "amount": {
+        "metric": {
+          "value": 90.0,
+          "unit": "g"
+        },
+        "us": {
+          "value": 2.0,
+          "unit": "cups"
+        }
+      }
+    }
+  ],
+  "totalCost": 1455.94,
+  "totalCostPerServing": 80.89
+}

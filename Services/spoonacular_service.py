@@ -3,11 +3,11 @@ import pandas as pd
 import os
 
 class SpoonacularService:
-    BASE_URL = 'https://api.spoonacular.com/recipes'
+    BASE_URL = os.environ.get('SPOON_BASE_URL', 'https://api.spoonacular.com/recipes')
     API_KEY = os.environ.get('SPOON_KEY')  # Replace with your actual Spoonacular API key
     
     def get_recipe(self, dish=None, cuisine=None, diet=None, intolerance=None):
-        url = 'https://api.spoonacular.com/recipes/complexSearch'
+        url = f'{self.BASE_URL}/complexSearch'
         headers = {'x-api-key': self.API_KEY}
         params = {}
         if dish is not None:  # Only add if not None

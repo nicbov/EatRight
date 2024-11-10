@@ -1,6 +1,11 @@
 xcuserdata/
 .DS_Store
+androidTestResultsUserPreferences.xml
 
+# vim
+*~
+*.swp
+*.swo
 
 # BEGIN - https://github.com/github/gitignore/blob/main/Python.gitignore
 # Byte-compiled / optimized / DLL files
