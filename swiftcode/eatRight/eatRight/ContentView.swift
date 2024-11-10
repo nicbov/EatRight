@@ -31,7 +31,7 @@ struct ContentView: View {
 			case .loading:
 				StartupView()
 					.onAppear {
-						DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
+						DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
 							appState = .login
 						}
 					}

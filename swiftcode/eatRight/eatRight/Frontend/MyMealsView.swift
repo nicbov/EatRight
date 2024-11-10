@@ -37,6 +37,7 @@ struct MyMealsView: View {
 									.overlay(RoundedRectangle(cornerRadius: 10)
 										.stroke(Color.orange, lineWidth: 2)) // Orange outline
 									.shadow(color: Color.gray.opacity(0.3), radius: 5, x: 0, y: 3) // Shadow effect
+									.foregroundColor(.green) 
 							}
 						}
 					}
@@ -44,7 +45,6 @@ struct MyMealsView: View {
 				}
 				Spacer() // Push content upwards
 			}
-
 		}
 	}
 }
@@ -59,4 +59,3 @@ struct MyMealsView_Previews: PreviewProvider {
 			.padding()
 	}
 }
-

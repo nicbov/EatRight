@@ -16,24 +16,15 @@ struct HeaderView: View {
 
 	var body: some View {
 		VStack {
-			ZStack {
-				// Background with seamless color transition
-				LinearGradient(gradient: Gradient(colors: [Color.green.opacity(0.7), Color.blue.opacity(0.3)]),
-							   startPoint: .topLeading, endPoint: .bottomTrailing)
-					.ignoresSafeArea(edges: .top)
-					.frame(height: 80) // Adjust height for the logo area
-
-				// Text logo overlaying the background
-				Text("Eat")
-					.font(.system(size: 36, weight: .bold, design: .serif))
-					.foregroundColor(Color.green.opacity(0.7)) // Muted green for "Eat"
-					+
-				Text("Right")
-					.font(.system(size: 36, weight: .bold, design: .serif))
-					.foregroundColor(Color.orange.opacity(0.7)) // Muted orange for "Right"
-					.italic() // Italicize "Right"
-
-			}
+			// Text logo without any background
+			Text("Eat")
+				.font(.system(size: 36, weight: .bold, design: .serif))
+				.foregroundColor(Color.green.opacity(0.7)) // Muted green for "Eat"
+				+
+			Text("Right")
+				.font(.system(size: 36, weight: .bold, design: .serif))
+				.foregroundColor(Color.orange.opacity(0.7)) // Muted orange for "Right"
+				.italic() // Italicize "Right"
 
 			// Tabs HStack including Profile in one long box, with vertical separators
 			HStack(spacing: 0) {
@@ -82,7 +73,7 @@ struct HeaderView: View {
 				}
 			}
 			.frame(maxHeight: 40) // Make the long box match the vertical lines height
-			.background(Color.white)
+			.background(Color.white) // Background for tab bar
 			.cornerRadius(10)
 			.shadow(radius: 5)
 

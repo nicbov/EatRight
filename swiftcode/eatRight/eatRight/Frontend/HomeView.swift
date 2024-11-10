@@ -30,17 +30,13 @@ struct HomeView: View {
 	var body: some View {
 		NavigationView {
 			ZStack {
-				LinearGradient(gradient: Gradient(colors: [Color.green.opacity(0.6), Color.blue.opacity(0.3)]),
-							   startPoint: .topLeading, endPoint: .bottomTrailing)
-					.ignoresSafeArea()
-
 				GeometryReader { geometry in
 					VStack {
 						HStack {
 							TextField("Search for recipes...", text: $searchText)
 								.textFieldStyle(RoundedBorderTextFieldStyle())
-								.frame(height: 50)
-								.padding(8)
+								.frame(height: 40)
+								.padding(0)
 								.background(Color.white.opacity(0.9))
 								.cornerRadius(10)
 								.overlay(RoundedRectangle(cornerRadius: 10)
