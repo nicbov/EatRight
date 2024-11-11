@@ -31,19 +31,37 @@ struct MealDetailView: View {
 
 	@State private var svgData: Data?  // State to hold SVG data
 	@State private var showSpicyPepper: Bool = false  // State to track if a spicy pepper should be displayed
+	@State private var isInstructionsExpanded: Bool = false  // State for Instructions dropdown
 	@State private var isNutritionExpanded: Bool = false  // State for Nutrition dropdown
 	@State private var isPriceExpanded: Bool = false  // State for Price dropdown
 
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading, spacing: 20) {
-				Text(mealTitle)
-					.font(.largeTitle)
-					.fontWeight(.bold)
-					.padding(.bottom, 10)
+				// Title with optional spicy pepper icon
+				HStack {
+					Text(mealTitle)
+						.font(.largeTitle)
+						.fontWeight(.bold)
+					if showSpicyPepper {
+						Image("Image 1")
+							.resizable()
+							.frame(width: 60, height: 60)
+							.padding(.leading, 5)
+						
+						
+					}
+				}
 
+				// Instructions dropdown
 				if let instructions = mealDetail?.instructionsInfo {
-					SectionView(title: "Instructions", content: instructions.map { $0.instruction })
+					DisclosureGroup("Instructions", isExpanded: $isInstructionsExpanded) {
+						SectionView(title: "Instructions", content: instructions.map { $0.instruction })
+							.padding(.top, 5)
+					}
+					.padding(.bottom, 10)
+					.font(.title2)
+					.foregroundColor(.black)
 				}
 
 				// Nutrition dropdown
@@ -68,34 +86,51 @@ struct MealDetailView: View {
 					.foregroundColor(.black)
 				}
 
+				// Total Cost and Cost per Serving in a prominent box
 				if let totalCost = mealDetail?.totalCost, let costPerServing = mealDetail?.totalCostPerServing {
-					VStack(alignment: .leading, spacing: 5) {
-						Text("Total Cost: $\(String(format: "%.2f", Double(totalCost) / 100))")
-							.font(.title2)
-							.fontWeight(.bold)
+					VStack(alignment: .leading, spacing: 10) {
+						// Total Cost
+						HStack {
+							Text("Total Cost:")
+								.font(.title2)
+								.fontWeight(.bold)
+								.foregroundColor(.black)
 
-						Text("Cost per Serving: $\(String(format: "%.2f", Double(costPerServing) / 100))")
-							.font(.title2)
-							.fontWeight(.bold)
+							Text("$\(String(format: "%.2f", Double(totalCost) / 100))")
+								.font(.title2)
+								.fontWeight(.bold)
+								.foregroundColor(.black)
+						}
+						.padding()
+						.background(Color.gray.opacity(0.2))  // Light grey background
+						.cornerRadius(10)  // Rounded corners
+						.shadow(radius: 5)  // Optional shadow for emphasis
+
+						// Cost per Serving
+						HStack {
+							Text("Cost per Serving:")
+								.font(.title2)
+								.fontWeight(.bold)
+								.foregroundColor(.black)
+
+							Text("$\(String(format: "%.2f", Double(costPerServing) / 100))")
+								.font(.title2)
+								.fontWeight(.bold)
+								.foregroundColor(.black)
+						}
+						.padding()
+						.background(Color.gray.opacity(0.2))  // Light grey background
+						.cornerRadius(10)  // Rounded corners
+						.shadow(radius: 5)  // Optional shadow for emphasis
 					}
 					.padding(.top, 10)
 				}
 
-				// Display a pepper icon if spiciness is above 500
-				if showSpicyPepper {
-					Image(systemName: "flame.fill")
-						.resizable()
-						.scaledToFit()
-						.frame(width: 50, height: 50)
-						.foregroundColor(.red)
-						.padding(.top, 10)
-						.overlay(Text("Spicy!").foregroundColor(.red).font(.caption), alignment: .bottom)
-				}
-
 				// Load and display SVG for taste info
 				if let tasteInfo = mealDetail?.tasteInfo {
-					SVGView(svgData: $svgData)  // Display SVG if available
-						.frame(width: 300, height: 300)
+					SVGView(svgData: $svgData)
+						.frame(width: 350, height: 350)  // Increased frame size
+						.padding(.top, 20)  // Add padding to move it higher
 						.onAppear {
 							loadTasteChart(tasteInfo: tasteInfo)
 						}
