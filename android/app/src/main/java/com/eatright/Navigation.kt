@@ -1,7 +1,6 @@
 package com.eatright
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -26,15 +26,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.eatright.composables.AccountSettings
 import com.eatright.composables.Favorites
 import com.eatright.composables.Home
 import com.eatright.composables.HomeViewModel
 import com.eatright.composables.Login
 import com.eatright.composables.LoginViewModel
+import com.eatright.composables.MealDetail
 import com.eatright.composables.MyMeals
 import com.eatright.composables.Profile
 import com.eatright.composables.Startup
@@ -48,6 +51,7 @@ sealed class Screen(val route: String) {
     object MyMeals : Screen("my_meals_screen")
     object Profile : Screen("profile_screen")
     object AccountSettings : Screen("account_settings_screen")
+    object MealDetail : Screen("meal_detail")
 }
 
 @Composable
@@ -60,6 +64,9 @@ fun Navigation(innerPadding: PaddingValues) {
     // the phone is rotated, or when you go to a different nav destination (e.g. Profile) and return.
     val homeViewModel: HomeViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
+
+    // This is a work-around to the backend not returning titles when requesting recipe details.
+    val recipeIdToTitleMap = remember { mutableMapOf<Int, String>() }
 
     // Navigation approach is based on https://youtu.be/4gUeyNkGE3g.
     val navController = rememberNavController()
@@ -79,9 +86,18 @@ fun Navigation(innerPadding: PaddingValues) {
         }
         composable(route = Screen.Home.route) {
             NavBar(navController) { innerPadding, modifier ->
-                Home(modifier, innerPadding, homeViewModel)
+                Home(modifier, innerPadding, homeViewModel, recipeIdToTitleMap) { recipeId ->
+                    navController.navigate("${Screen.MealDetail.route}/${recipeId}")
+                }
             }
         }
+        composable(
+            route = "${Screen.MealDetail.route}/{recipeId}",
+            arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
+                MealDetail(recipeId, recipeIdToTitleMap.getOrDefault(recipeId, "<unknown>"), innerPadding = innerPadding, navController = navController)
+            }
         composable(route = Screen.Favorites.route) {
             NavBar(navController) { innerPadding, modifier ->
                 Favorites(modifier, innerPadding)
