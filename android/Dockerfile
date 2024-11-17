@@ -2,19 +2,20 @@
 FROM cimg/android:2024.11.1
 
 RUN sdkmanager --list && \
-    sdkmanager --verbose --install 'system-images;android-34;google_apis;x86_64' && \
+    sdkmanager --verbose --install 'system-images;android-34;aosp_atd;x86_64' && \
     sdkmanager --verbose --install 'build-tools;34.0.0'
 
-# TODO: back to pixel_7_pro?
-RUN avdmanager create avd -n fakephone -d pixel_3 -k "system-images;android-34;google_apis;x86_64"
+RUN avdmanager create avd -n fakephone -d pixel_3 -k "system-images;android-34;aosp_atd;x86_64"
 
-RUN     sudo groupadd -r kvm && sudo gpasswd -a root kvm
+RUN sudo groupadd -r kvm && sudo gpasswd -a root kvm
 
 RUN echo hw.audioInput=no >> ~/.android/avd/pixel7pro_android35.ini && \
     echo hw.audioOutput=no >> ~/.android/avd/pixel7pro_android35.ini && \
     echo hw.GPS=no >> ~/.android/avd/pixel7pro_android35.ini
-
 RUN sudo apt update && sudo apt install socat
+
+# aosp_atd image's emulator output suggests they can benefit from these drivers.
+RUN sudo apt install libvulkan1 mesa-vulkan-drivers
 
 ENV USER=circleci
 ENV HOME=/home/circleci
