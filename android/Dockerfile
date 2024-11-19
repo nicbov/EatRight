@@ -23,4 +23,4 @@ ENV GRADLE_HOME=/usr/local/gradle-8.10.2
 ENV GRADDLE_USER_HOME=/home/circleci/.gradle
 ENV PATH="$PATH:$GRADLE_HOME/bin"
 
-ENTRYPOINT ["sh", "-c", "sudo chown $USER /dev/kvm && exec emulator -avd fakephone -no-snapshot -no-qt -no-metrics -no-boot-anim -no-audio -port 5556"]
+ENTRYPOINT ["sh", "-c", "sudo chown $USER /dev/kvm && exec emulator -avd fakephone -no-snapshot -no-qt -no-metrics -no-boot-anim -no-audio -port 5556 -logcat '*:i com.eatright:d'"]
