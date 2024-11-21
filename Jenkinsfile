@@ -113,7 +113,7 @@ pipeline {
                     }
                     cleanWs()
                     discordSend(
-                        webhookURL: "https://discord.com/api/webhooks/1306344262027313173/CcxaTvPGEBSqVmwW-Gj3_hN0339BHmEPCDUhbLLBXxOEq8Mk4ZUDHbHvAgS0ZjsSqz3B",
+                        webhookURL: "https://discord.com/api/webhooks/1308974200295391373/UbQUGXJKTkYhCIVhXSdzAPPeUixpUIBDP9QhJlMBnMFWUK-KcUZWhH3R3UYPcLPcQxeN",
                         description: "Build ID: ${env.BUILD_NUMBER}\nBuild Status: ${currentBuild.currentResult}\nBuild Duration: ${currentBuild.durationString}",
                         footer: '',
                         image: '',
