@@ -8,6 +8,7 @@ import WebKit
 struct MealDetailView: View {
 	var mealDetail: MealDetail?
 	var mealTitle: String
+	@EnvironmentObject var mealsData: MealsData // Access shared meals data
 
 	struct SectionView: View {
 		var title: String
@@ -34,6 +35,7 @@ struct MealDetailView: View {
 	@State private var isInstructionsExpanded: Bool = false  // State for Instructions dropdown
 	@State private var isNutritionExpanded: Bool = false  // State for Nutrition dropdown
 	@State private var isPriceExpanded: Bool = false  // State for Price dropdown
+	@State private var showAlert = false
 
 	var body: some View {
 		ScrollView {
@@ -43,14 +45,34 @@ struct MealDetailView: View {
 					Text(mealTitle)
 						.font(.largeTitle)
 						.fontWeight(.bold)
+						.foregroundColor(Color.green) // Green title
 					if showSpicyPepper {
 						Image("Image 1")
 							.resizable()
 							.frame(width: 60, height: 60)
 							.padding(.leading, 5)
-						
-						
 					}
+				}
+				.padding(.top, 20)
+
+				// Save to My Meals button
+				Button(action: {
+					if let mealDetail = mealDetail {
+						// Wrap mealDetail into a MealWithDetails and add to mealsData
+						let mealWithDetails = MealWithDetails(title: mealTitle, mealDetail: mealDetail)
+						mealsData.meals.append(mealWithDetails)
+					} else {
+						showAlert = true
+					}
+				}) {
+					Text("Save Meal")
+						.padding()
+						.background(Color.orange) // Orange background
+						.cornerRadius(8) // Rounded corners
+						.foregroundColor(.white) // White text
+				}
+				.alert(isPresented: $showAlert) {
+					Alert(title: Text("Error"), message: Text("No meal details available to save."), dismissButton: .default(Text("OK")))
 				}
 
 				// Instructions dropdown
@@ -78,7 +100,7 @@ struct MealDetailView: View {
 				// Price dropdown
 				if let price = mealDetail?.priceInfo {
 					DisclosureGroup("Price Info", isExpanded: $isPriceExpanded) {
-						SectionView(title: "Price Info", content: price.map { "\($0.amount) \($0.name) - $\(String(format: "%.2f", $0.price / 100))" })
+						SectionView(title: "Price Info", content: price.map { "\($0.amount) \($0.ingredient) - $\(String(format: "%.2f", $0.price / 100))" })
 							.padding(.top, 5)
 					}
 					.padding(.bottom, 10)
@@ -102,7 +124,7 @@ struct MealDetailView: View {
 								.foregroundColor(.black)
 						}
 						.padding()
-						.background(Color.gray.opacity(0.2))  // Light grey background
+						.background(Color.green.opacity(0.2))  // Green background
 						.cornerRadius(10)  // Rounded corners
 						.shadow(radius: 5)  // Optional shadow for emphasis
 
@@ -119,7 +141,7 @@ struct MealDetailView: View {
 								.foregroundColor(.black)
 						}
 						.padding()
-						.background(Color.gray.opacity(0.2))  // Light grey background
+						.background(Color.green.opacity(0.2))  // Green background
 						.cornerRadius(10)  // Rounded corners
 						.shadow(radius: 5)  // Optional shadow for emphasis
 					}
