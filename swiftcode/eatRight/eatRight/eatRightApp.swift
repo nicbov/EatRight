@@ -8,9 +8,13 @@ import SwiftUI
 
 @main
 struct EatRightApp: App {
+	@StateObject var mealsData = MealsData() // Create shared meals data
+
 	var body: some Scene {
 		WindowGroup {
 			ContentView()
+				.environmentObject(mealsData) // Inject MealsData into the environment
 		}
 	}
 }
+
