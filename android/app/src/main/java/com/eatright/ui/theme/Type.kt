@@ -26,6 +26,14 @@ fun createTypography(colorScheme: ColorScheme): Typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 36.sp,
         color = colorScheme.secondary,
+        lineHeight = 40.sp,
+        letterSpacing = 0.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        color = colorScheme.primary,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),

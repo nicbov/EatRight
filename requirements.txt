@@ -1,7 +1,8 @@
 Flask==2.2.2
 Flask_Bcrypt==1.0.1
-Flask_MySQLdb==2.0.0
 Flask-MySQL==1.5.2
 pandas==2.2.3
 Requests==2.32.3
 Werkzeug==2.2.3
+plotly==5.24.1
+kaleido==0.2.1

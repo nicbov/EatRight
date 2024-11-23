@@ -39,8 +39,8 @@ class Recipe:
 
             self.price_info = pd.concat([
             self.price_info,
-            pd.DataFrame([{'Name': 'Total Cost', 'Amount': '', 'Price': total_cost}]),
-            pd.DataFrame([{'Name': 'Cost per Serving', 'Amount': '', 'Price': total_cost_per_serving}])
+            pd.DataFrame([{'Name': 'Total Cost', 'Amount': 1.0, 'Price': total_cost}]),
+            pd.DataFrame([{'Name': 'Cost per Serving', 'Amount': 1.0, 'Price': total_cost_per_serving}])
             ], ignore_index=True)
         else:
             self.price_info = pd.DataFrame()

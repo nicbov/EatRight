@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request, send_file
 from flaskext.mysql import MySQL
 
-import flask_mysqldb
 from werkzeug.security import generate_password_hash
 from Services.reccomendation_model import RecommendationModel  # Add this line
 

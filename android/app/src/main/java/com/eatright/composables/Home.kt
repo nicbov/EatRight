@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -64,6 +65,8 @@ fun Home(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues = PaddingValues(0.dp),
     viewModel: HomeViewModel = viewModel(),
+    recipeIdToTitleMap: MutableMap<Int, String>? = null,
+    onRecipeSelection: (Int) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -72,7 +75,7 @@ fun Home(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         item {
-            RecipeSearchSection(viewModel)
+            RecipeSearchSection(viewModel, recipeIdToTitleMap)
         }
         item {
             FilterSection(
@@ -85,12 +88,15 @@ fun Home(
             ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .padding(10.dp),
+                    .padding(10.dp)
+                    .clickable { onRecipeSelection(recipe.id) },
             ) {
                 Text(
                     text = recipe.title,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(5.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth(),
                 )
             }
         }
@@ -100,6 +106,7 @@ fun Home(
 @Composable
 private fun RecipeSearchSection(
     viewModel: HomeViewModel,
+    recipeIdToTitleMap: MutableMap<Int, String>? = null,
 ) {
     var text by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
@@ -148,6 +155,9 @@ private fun RecipeSearchSection(
                         null,
                         "Search results: ${viewModel.recipes.count()} recipes: ${viewModel.recipes}"
                     )
+                    if (recipeIdToTitleMap != null) {
+                        recipeIdToTitleMap.putAll(viewModel.recipes.associate { it.id to it.title })
+                    }
                     isLoading = false
                 }
             },
@@ -252,6 +262,8 @@ private fun FilterSlider(
 @Composable
 fun HomePreview() {
     EatRightTheme {
-        Home()
+        Home() { recipeId ->
+            Log.i(null, "Selected recipe with ID ${recipeId}")
+        }
     }
 }

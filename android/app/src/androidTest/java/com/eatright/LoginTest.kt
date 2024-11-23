@@ -40,7 +40,7 @@ class LoginTest {
             .onNodeWithText("Login")
             .performClick()
 
-        rule.waitUntil(timeoutMillis=10_000) {
+        rule.waitUntil(timeoutMillis = 10_000) {
             rule
                 .onAllNodesWithText("Incorrect username or password.")
                 .fetchSemanticsNodes().size == 1
@@ -65,15 +65,15 @@ class LoginTest {
             .onNodeWithText("Username", useUnmergedTree = true)
             .onParent()
             .performTextInput("test")
-        val passwordField = rule
+        rule
             .onNodeWithText("Password", useUnmergedTree = true)
             .onParent()
-        passwordField.performTextInput("password")
+            .performTextInput("password")
         rule
             .onNodeWithText("Login")
             .performClick()
 
         rule
-            .waitUntil(timeoutMillis=10_000) { loggedIn }
+            .waitUntil(timeoutMillis = 10_000) { loggedIn }
     }
 }

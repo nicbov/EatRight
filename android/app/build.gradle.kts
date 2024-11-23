@@ -75,4 +75,5 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:2.3.12")
     implementation("org.slf4j:slf4j-android:1.7.35")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
+    implementation("com.caverock:androidsvg-aar:1.4")
 }

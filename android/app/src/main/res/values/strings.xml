@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">EatRight</string>
     <string name="eatright_logo_desc">EatRight Logo</string>
+    <string name="redpepper_desc">image of a red pepper to represent spicy food</string>
 </resources>
