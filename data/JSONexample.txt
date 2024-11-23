@@ -1,0 +1,108 @@
+{
+  "instructions_info": [
+    {
+      "Description": "Cook fettuccine pasta according to package directions.",
+      "Step": 1
+    },
+    {
+      "Description": "Grill chicken breast and slice into strips.",
+      "Step": 2
+    },
+    {
+      "Description": "Mix the cooked pasta with creamy Alfredo sauce and top with chicken.",
+      "Step": 3
+    },
+    {
+      "Description": "Serve with grated Parmesan and fresh parsley.",
+      "Step": 4
+    },
+    {
+      "Description": "Enjoy with a side of garlic bread.",
+      "Step": 5
+    }
+  ],
+  "nutrition_info": [
+    {
+      "Amount": 700.0,
+      "Name": "Calories",
+      "PercentOfDailyNeeds": 35.0,
+      "Unit": "kcal"
+    },
+    {
+      "Amount": 28.0,
+      "Name": "Fat",
+      "PercentOfDailyNeeds": 43.0,
+      "Unit": "grams"
+    },
+    {
+      "Amount": 80.0,
+      "Name": "Carbs",
+      "PercentOfDailyNeeds": 27.0,
+      "Unit": "grams"
+    },
+    {
+      "Amount": 35.0,
+      "Name": "Protein",
+      "PercentOfDailyNeeds": 70.0,
+      "Unit": "grams"
+    }
+  ],
+  "price_info": [
+    {
+      "Amount": "300g",
+      "Ingredient": "Chicken Breast",
+      "Price": 300.0
+    },
+    {
+      "Amount": "200g",
+      "Ingredient": "Alfredo Sauce",
+      "Price": 200.0
+    },
+    {
+      "Amount": "100g",
+      "Ingredient": "Fettuccine",
+      "Price": 100.0
+    },
+    {
+      "Amount": "50g",
+      "Ingredient": "Parmesan Cheese",
+      "Price": 50.0
+    },
+    {
+      "Amount": "20ml",
+      "Ingredient": "Olive Oil",
+      "Price": 20.0
+    }
+  ],
+  "taste_info": [
+    {
+      "Taste Metric": "Sweetness",
+      "Value": 20.1
+    },
+    {
+      "Taste Metric": "Saltiness",
+      "Value": 25.8
+    },
+    {
+      "Taste Metric": "Sourness",
+      "Value": 6.85
+    },
+    {
+      "Taste Metric": "Bitterness",
+      "Value": 13.5
+    },
+    {
+      "Taste Metric": "Savoriness",
+      "Value": 12.3
+    },
+    {
+      "Taste Metric": "Fattiness",
+      "Value": 95.0
+    },
+    {
+      "Taste Metric": "Spiciness",
+      "Value": 0.0
+    }
+  ]
+}
+

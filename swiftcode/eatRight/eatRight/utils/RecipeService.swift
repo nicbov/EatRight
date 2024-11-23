@@ -11,10 +11,10 @@ struct Recipe: Identifiable, Decodable {
 	let id: Int
 	let title: String
 }
-
 class RecipeService {
-	let baseURL = "http://127.0.0.1:3000"
+	let baseURL = "http://127.0.0.1:4000" // Change to match your new Flask API base URL
 
+	// Fetch recipes based on query parameters
 	func fetchRecipes(dish: String, cuisine: String?, diet: String?, intolerance: String?, completion: @escaping (Result<[Recipe], Error>) -> Void) {
 		var urlComponents = URLComponents(string: "\(baseURL)/search_recipes")!
 		var queryItems = [URLQueryItem(name: "dish", value: dish)]
@@ -52,8 +52,9 @@ class RecipeService {
 		task.resume()
 	}
 
+	// Fetch details of a specific recipe
 	func fetchRecipeDetails(recipeId: Int, completion: @escaping (Result<MealDetail, Error>) -> Void) {
-		let urlString = "http://127.0.0.1:3000/recipe/\(recipeId)"
+		let urlString = "http://127.0.0.1:4000/recipe/\(recipeId)"
 		guard let url = URL(string: urlString) else {
 			let error = NSError(domain: "InvalidURL", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL: \(urlString)"])
 			completion(.failure(error))
@@ -72,9 +73,9 @@ class RecipeService {
 				return
 			}
 
-			// Print the raw JSON response for debugging
+			// Debug: Print the raw response data to check for issues
 			if let jsonString = String(data: data, encoding: .utf8) {
-				print("Debug: Recipe Details JSON: \(jsonString)")
+				print("Raw API Response: \(jsonString)")
 			}
 
 			do {
@@ -83,22 +84,14 @@ class RecipeService {
 			} catch {
 				print("Debug: Error decoding recipe details JSON: \(error.localizedDescription)")
 				completion(.failure(error))
-				do {
-					let mealDetail = try JSONDecoder().decode(MealDetail.self, from: data)
-					completion(.success(mealDetail))
-				} catch let decodingError as DecodingError {
-					print("Debug: Decoding error: \(decodingError)")
-					completion(.failure(decodingError))
-				} catch {
-					print("Debug: General error: \(error.localizedDescription)")
-					completion(.failure(error))
-				}
 			}
 		}
 
 		task.resume()
 	}
+
 	
+	// This method is to generate taste chart based on the taste data
 	func fetchTasteChart(tasteInfo: [[String: Any]], completion: @escaping (Result<Data, Error>) -> Void) {
 		var filteredTasteInfo = tasteInfo.filter { $0["Taste Metric"] as? String != "spiciness" }
 

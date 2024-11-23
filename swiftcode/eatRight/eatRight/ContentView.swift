@@ -1,8 +1,5 @@
 //
-//  ContentView.swift
-//  eatRight
-// add social medi aspect to cooking, maybe posting dishes of their own on instagram like UI
-//  Created by only Nico Boving(alone) on 9/30/24.
+//new contentview
 import SwiftUI
 
 enum AppState {
@@ -14,16 +11,15 @@ enum AppState {
 enum Tab {
 	case home
 	case favorites
-	case myMeals // Added new tab for My Meals
+	case myMeals
 }
-
 struct ContentView: View {
 	@State private var appState: AppState = .loading
-	@State private var selectedTab: Tab = .home // Track the active tab
+	@State private var selectedTab: Tab = .home
 	@State private var isAuthenticated: Bool = false
-	@State private var showingProfile = false // State for profile view
-	@State private var showingMyMeals = false // State for My Meals view
-
+	@State private var showingProfile = false
+	@State private var showingMyMeals = false
+	@EnvironmentObject var mealsData: MealsData  // Access mealsData from environment
 
 	var body: some View {
 		VStack {
@@ -35,45 +31,42 @@ struct ContentView: View {
 							appState = .login
 						}
 					}
+
 			case .login:
 				LoginView(authenticate: authenticateUser)
-			case .home:
-				VStack {
-					HeaderView(
-						showingProfile: $showingProfile,
-						selectedTab: $selectedTab,
-						showingMyMeals: $showingMyMeals,
-						switchToFavorites: switchToFavorites,
-						switchToMyMeals: switchToMyMeals
-					)
 
-					// Display content based on the selected tab
-					switch selectedTab {
-					case .home:
-						HomeView(showingProfile: $showingProfile, switchToFavorites: switchToFavorites)
-					case .favorites:
-						FavoritesView(showingProfile: $showingProfile)
-					case .myMeals:
-						MyMealsView(showingProfile: $showingProfile)
+			case .home:
+				HeaderView(
+					showingProfile: $showingProfile,
+					selectedTab: $selectedTab,
+					showingMyMeals: $showingMyMeals,
+					switchToFavorites: { selectedTab = .favorites },
+					switchToMyMeals: { selectedTab = .myMeals }
+				)
+				NavigationView {
+					VStack(spacing: 0) { // Set spacing to 0 to remove unwanted padding
+						switch selectedTab {
+						case .home:
+							HomeView(showingProfile: $showingProfile) {
+								selectedTab = .favorites
+							}
+							.environmentObject(mealsData)  // Properly pass mealsData to HomeView
+
+						case .favorites:
+							FavoritesView(showingProfile: $showingProfile)
+
+						case .myMeals:
+							MyMealsView()
+								.environmentObject(mealsData)  // Pass mealsData to MyMealsView
+						}
 					}
-				}
-				.sheet(isPresented: $showingProfile) {
-					ProfileView(showingProfile: $showingProfile) // Correctly pass showingProfile as binding
+					.sheet(isPresented: $showingProfile) {
+						ProfileView(showingProfile: $showingProfile)
+					}
 				}
 			}
 		}
 		.padding()
-	}
-
-	// Switch to Favorites tab
-	func switchToFavorites() {
-		selectedTab = .favorites
-	}
-
-	// Switch to My Meals tab
-	func switchToMyMeals() {
-		selectedTab = .myMeals // Update this to switch to My Meals tab
-		showingMyMeals = true // Ensure My Meals view is shown if you need it
 	}
 
 	func authenticateUser(isAuthenticated: Bool) {
@@ -83,12 +76,5 @@ struct ContentView: View {
 		} else {
 			print("Authentication failed")
 		}
-	}
-}
-
-// Preview for ContentView
-struct ContentView_Previews: PreviewProvider {
-	static var previews: some View {
-		ContentView()
 	}
 }
