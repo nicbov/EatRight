@@ -16,16 +16,18 @@ struct HeaderView: View {
 
 	var body: some View {
 		VStack {
-			// Text logo without any background
-			Text("Eat")
-				.font(.system(size: 36, weight: .bold, design: .serif))
-				.foregroundColor(Color.green.opacity(0.7)) // Muted green for "Eat"
-				+
-			Text("Right")
-				.font(.system(size: 36, weight: .bold, design: .serif))
-				.foregroundColor(Color.orange.opacity(0.7)) // Muted orange for "Right"
-				.italic() // Italicize "Right"
 
+			Image("Image")
+							.resizable()
+							.scaledToFit()
+							.frame(height: 60) // Adjust the height as needed
+							.padding(8) // Padding to give spacing around the image
+							.background(
+								RoundedRectangle(cornerRadius: 10)
+									.stroke(Color.green, lineWidth: 2) // Green outline
+							)
+
+			
 			// Tabs HStack including Profile in one long box, with vertical separators
 			HStack(spacing: 0) {
 				// Tab Buttons
@@ -73,7 +75,6 @@ struct HeaderView: View {
 				}
 			}
 			.frame(maxHeight: 40) // Make the long box match the vertical lines height
-			.background(Color.white) // Background for tab bar
 			.cornerRadius(10)
 			.shadow(radius: 5)
 
@@ -91,7 +92,7 @@ struct HeaderView: View {
 				.frame(maxWidth: .infinity)
 				.padding()
 				.foregroundColor(.green) // Set all tab titles to green
-				.background(selectedTab == tab ? Color.white : Color.clear)
+				.background(selectedTab == tab ? Color.gray : Color.clear)
 				.cornerRadius(5)
 		}
 	}
