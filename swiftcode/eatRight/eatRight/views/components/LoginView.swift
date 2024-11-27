@@ -27,7 +27,6 @@ struct LoginView: View {
 						.scaledToFit()
 						.frame(height: geometry.size.height * 0.1) // Make the logo smaller
 						.padding()
-						.background(Color.white) // Background for the logo
 						.cornerRadius(10) // Rounded corners
 						.shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 5) // Shadow effect
 						.overlay(

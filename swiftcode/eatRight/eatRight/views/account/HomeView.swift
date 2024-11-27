@@ -22,68 +22,71 @@ struct HomeView: View {
 	private let recipeService = RecipeService()
 
 	var body: some View {
-		VStack {
-			// Adjusted padding for better spacing around content
-			TextField("Search for recipes...", text: $searchText)
-				.textFieldStyle(RoundedBorderTextFieldStyle())
-				.padding(.horizontal)
-
-			Button(action: fetchRecipes) {
-				Text("Fetch Recipes")
-					.fontWeight(.bold)
-					.padding()
-					.frame(maxWidth: .infinity)
-					.background(Color.orange)
-					.foregroundColor(.white)
-					.cornerRadius(10)
-			}
-			.padding(.horizontal)
-
-			Button(action: { showFilters.toggle() }) {
-				Text("Filters")
-					.fontWeight(.bold)
-					.padding()
-					.frame(maxWidth: .infinity)
-					.background(Color.white)
-					.foregroundColor(.orange)
-					.cornerRadius(10)
-					.overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.orange, lineWidth: 2))
-			}
-			.padding(.horizontal)
-
-			if showFilters {
-				VStack(spacing: 10) {
-					createFilterSlider(label: "Protein", value: $protein)
-					createFilterSlider(label: "Carbs", value: $carbs)
-					createFilterSlider(label: "Fats", value: $fats)
+		GeometryReader { geometry in
+			VStack {
+				TextField("Search for recipes...", text: $searchText)
+					.textFieldStyle(RoundedBorderTextFieldStyle())
+					.padding(.horizontal)
+				
+				Button(action: fetchRecipes) {
+					Text("Fetch Recipes")
+						.fontWeight(.bold)
+						.padding()
+						.frame(maxWidth: .infinity)
+						.background(Color.orange)
+						.foregroundColor(.white)
+						.cornerRadius(10)
 				}
-				.padding()
-			}
-
-			if isLoading {
-				ProgressView("Loading recipes...")
-			} else if let errorMessage = errorMessage {
-				Text("Error: \(errorMessage)")
-					.foregroundColor(.red)
-			} else if recipes.isEmpty {
-				Text("No recipes found.")
-					.foregroundColor(.gray)
-			} else {
-				List(recipes, id: \.id) { recipe in
-					NavigationLink(destination: MealDetailView(mealDetail: selectedRecipeDetail, mealTitle: selectedRecipeTitle)
-						.onAppear {
-							fetchRecipeDetails(recipeId: recipe.id) { detail in
-								selectedRecipeDetail = detail
-								selectedRecipeTitle = recipe.title
-							}
-						}
-						.environmentObject(mealsData)) {
-						Text(recipe.title)
+				.padding(.horizontal)
+				
+				Button(action: { showFilters.toggle() }) {
+					Text("Filters")
+						.fontWeight(.bold)
+						.padding()
+						.frame(maxWidth: .infinity)
+						.background(Color.white)
+						.foregroundColor(.orange)
+						.cornerRadius(10)
+						.overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.orange, lineWidth: 2))
+				}
+				.padding(.horizontal)
+				
+				if showFilters {
+					VStack(spacing: 10) {
+						createFilterSlider(label: "Protein", value: $protein)
+						createFilterSlider(label: "Carbs", value: $carbs)
+						createFilterSlider(label: "Fats", value: $fats)
 					}
+					.padding()
+				}
+				
+				if isLoading {
+					ProgressView("Loading recipes...")
+				} else if let errorMessage = errorMessage {
+					Text("Error: \(errorMessage)")
+						.foregroundColor(.red)
+				} else if recipes.isEmpty {
+					Text("No recipes found.")
+						.foregroundColor(.gray)
+				} else {
+					List(recipes, id: \.id) { recipe in
+						NavigationLink(destination: MealDetailView(mealDetail: selectedRecipeDetail, mealTitle: selectedRecipeTitle)
+							.onAppear {
+								fetchRecipeDetails(recipeId: recipe.id) { detail in
+									selectedRecipeDetail = detail
+									selectedRecipeTitle = recipe.title
+								}
+							}
+							.environmentObject(mealsData)) {
+								Text(recipe.title)
+							}
+					}
+					.frame(width: geometry.size.width) // Ensures it uses the full width
+					.padding()
 				}
 			}
 		}
-		.padding(.top, 0) // Remove extra top padding or reduce if needed
+		.padding(.top, 0)
 	}
 
 	private func fetchRecipes() {
