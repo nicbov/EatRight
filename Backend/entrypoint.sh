@@ -5,4 +5,4 @@ python ./tableCreator.py
 python ./dataPusher.py
 
 cd /app
-python ./Main.py
+exec python ./Main.py
