@@ -144,7 +144,7 @@ private fun RecipeSearchSection(
 
                     // For development.  This IP is owned by the Android simulator's host, where we
                     // expect to be running the backend.
-                    val eatRightBackendAddress = "10.0.2.2:3000"
+                    val eatRightBackendAddress = "10.0.2.2:4000"
                     viewModel.recipes =
                         client.get("http://${eatRightBackendAddress}/search_recipes") {
                             url {
