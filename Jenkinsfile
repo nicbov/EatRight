@@ -98,9 +98,9 @@ pipeline {
 			stage('Deploy') {
 			    steps {
 			        dir(DIR) {
-				  sh "ssh benji.ddnsgeek.com rm -Rf /tmp/Backend"
-				  sh "scp -r Backend/ benji.ddnsgeek.com:/tmp/"
-				  sh "ssh benji.ddnsgeek.com sh -c 'cd /tmp/Backend; ./reset-staging.sh'"
+				  sh "ssh eatright@benji.ddnsgeek.com rm -Rf /tmp/Backend"
+				  sh "scp -r Backend/ eatright@benji.ddnsgeek.com:/tmp/"
+				  sh "ssh eatright@benji.ddnsgeek.com sh -c 'cd /tmp/Backend; ./reset-staging.sh'"
 				}
 			    }
 			}
