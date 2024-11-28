@@ -7,7 +7,7 @@ pipeline {
         GITHUB_TOKEN = credentials('GITHUB_TOKEN')
         DIR = 'EatRight'
         ANDROID_DIR = 'EatRight/android'
-        DOCKER_COMPOSE_CMD = "docker compose -f env.docker-compose.yml -p ${env.BUILD_NUMBER}"
+        DOCKER_COMPOSE_CMD = "docker compose --profile with-android -p ${env.BUILD_NUMBER}"
     }
 
     stages {

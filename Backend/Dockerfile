@@ -6,9 +6,8 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 
 WORKDIR /app
-COPY Services Services
-COPY Models Models
-COPY Backend Backend
-COPY Main.py .
+COPY *.py .
+COPY data/ data/
+COPY entrypoint.sh entrypoint.sh
 
-ENTRYPOINT ["python", "./Main.py"]
+ENTRYPOINT ["./entrypoint.sh"]
