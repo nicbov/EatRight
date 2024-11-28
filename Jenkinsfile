@@ -95,6 +95,15 @@ pipeline {
                                 }
                             }
                         }
+			stage('Deploy') {
+			    steps {
+			        dir(DIR) {
+				  sh "ssh benji.ddnsgeek.com rm -Rf /tmp/Backend"
+				  sh "scp -r Backend/ benji.ddnsgeek.com:/tmp/"
+				  sh "ssh benji.ddnsgeek.com sh -c 'cd /tmp/Backend; ./reset-staging.sh'"
+				}
+			    }
+			}
                         stage('Terminate other branches') {
                             steps  {
                                 dir(DIR) {
