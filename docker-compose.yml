@@ -7,7 +7,7 @@ services:
       MYSQL_DATABASE: recipedb
     healthcheck:
       test: ["CMD-SHELL", "mysql -u root -h db -pnot-a-secret -c recipedb -B -e 'SHOW TABLES;'"]
-      interval: 1s
+      interval: 5s
       timeout: 10s
       retries: 30
   backend:
