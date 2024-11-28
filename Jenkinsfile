@@ -89,7 +89,7 @@ pipeline {
                         stage('Test') {
                             steps {
                                 dir(ANDROID_DIR) {
-                                    sh "${env.DOCKER_COMPOSE_CMD} exec android sh -c \"socat TCP-LISTEN:3000,fork TCP:backend:3000 & adb -s emulator-5556 shell screenrecord /sdcard/screen.mp4 & cd /EatRight/android && ANDROID_SERIAL=emulator-5556 gradle connectedAndroidTest\""
+                                    sh "${env.DOCKER_COMPOSE_CMD} exec android sh -c \"socat TCP-LISTEN:4000,fork TCP:backend:4000 & adb -s emulator-5556 shell screenrecord /sdcard/screen.mp4 & cd /EatRight/android && ANDROID_SERIAL=emulator-5556 gradle connectedAndroidTest\""
                                     sh "${env.DOCKER_COMPOSE_CMD} exec android sh -c \"cd /EatRight/android && adb -s emulator-5556 kill-server && adb -s emulator-5556 pull /sdcard/screen.mp4\""
                                     sh "${env.DOCKER_COMPOSE_CMD} exec android sudo find /EatRight/ -user circleci -print -exec chown \$(id -u):\$(id -g) {} \\;"
                                 }
