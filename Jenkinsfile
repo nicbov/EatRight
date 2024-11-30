@@ -100,7 +100,7 @@ pipeline {
 			        dir(DIR) {
 				  sh "ssh eatright@benji.ddnsgeek.com rm -Rf /tmp/Backend"
 				  sh "scp -r Backend/ eatright@benji.ddnsgeek.com:/tmp/"
-				  sh "ssh eatright@benji.ddnsgeek.com sh -c 'cd /tmp/Backend; ./reset-staging.sh'"
+				  sh "ssh eatright@benji.ddnsgeek.com 'cd /tmp/Backend && ./reset-staging.sh'"
 				}
 			    }
 			}
