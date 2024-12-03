@@ -18,14 +18,20 @@ struct HomeView: View {
 	@EnvironmentObject var mealsData: MealsData
 	@State private var selectedRecipeTitle: String = ""
 
-	var switchToFavorites: () -> Void
 	private let recipeService = RecipeService()
 
 	var body: some View {
 		GeometryReader { geometry in
 			VStack {
+				// Add padding at the top to space from the HeaderView divider
 				TextField("Search for recipes...", text: $searchText)
-					.textFieldStyle(RoundedBorderTextFieldStyle())
+					.textFieldStyle(PlainTextFieldStyle()) // Removes default style
+					.padding()
+					.background(
+						RoundedRectangle(cornerRadius: 10)
+							.stroke(Color.green, lineWidth: 2) // Green rectangle outline
+					)
+					.frame(height: 50) // Increase height for a bigger search bar
 					.padding(.horizontal)
 				
 				Button(action: fetchRecipes) {
@@ -85,8 +91,8 @@ struct HomeView: View {
 					.padding()
 				}
 			}
+			.padding(.top, 20) // Added padding to space it from the HeaderView divider
 		}
-		.padding(.top, 0)
 	}
 
 	private func fetchRecipes() {
@@ -125,3 +131,4 @@ struct HomeView: View {
 		.padding()
 	}
 }
+

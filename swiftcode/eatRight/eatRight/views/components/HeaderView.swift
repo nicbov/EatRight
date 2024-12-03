@@ -8,111 +8,51 @@ import SwiftUI
 
 struct HeaderView: View {
 	@Binding var showingProfile: Bool
-	@Binding var selectedTab: Tab
-	@Binding var showingMyMeals: Bool
-
-	var switchToFavorites: () -> Void
-	var switchToMyMeals: () -> Void
 
 	var body: some View {
 		VStack {
+			HStack {
+				// Spacer before the logo to center it
+				Spacer()
 
-			Image("Image")
-							.resizable()
-							.scaledToFit()
-							.frame(height: 60) // Adjust the height as needed
-							.padding(8) // Padding to give spacing around the image
-							.background(
-								RoundedRectangle(cornerRadius: 10)
-									.stroke(Color.green, lineWidth: 2) // Green outline
-							)
+				// Logo in the center
+				Image("Image")
+					.resizable()
+					.scaledToFit()
+					.frame(height: 40) // Adjust the height as needed
+					.padding(8) // Padding to give spacing around the image
+					.background(
+						RoundedRectangle(cornerRadius: 10)
+							.stroke(Color.green, lineWidth: 2) // Green outline
+					)
 
-			
-			// Tabs HStack including Profile in one long box, with vertical separators
-			HStack(spacing: 0) {
-				// Tab Buttons
-				Group {
-					// Tab: Home
-					createTabButton(title: "Home", tab: .home) {
-						selectedTab = .home
-						showingMyMeals = false // Hide My Meals view
-					}
+				Spacer()
 
-					Divider() // Vertical divider between tabs
-
-					// Tab: Favorites
-					createTabButton(title: "Favorites", tab: .favorites) {
-						switchToFavorites() // Switch to Favorites tab
-						showingMyMeals = false // Hide My Meals view when switching
-					}
-
-					Divider() // Vertical divider between tabs
-
-					// Tab: My Meals
-					createTabButton(title: "My Meals", tab: .myMeals) {
-						selectedTab = .myMeals // Directly set selectedTab to myMeals
-						showingMyMeals = false // Ensure My Meals view is displayed properly
-					}
-				}
-
-				// Profile button with adjusted size and positioning
+				// Account button on the right
 				Button(action: {
 					showingProfile.toggle()
 				}) {
-					Image(systemName: "person.circle.fill")
+					Image(systemName: "line.horizontal.3")
 						.resizable()
-						.frame(width: 40, height: 40) // Adjust size as needed
+						.frame(width: 20, height: 20) // Adjust size as needed
 						.foregroundColor(.green)
 				}
-				.padding(.leading, 10) // Adjusted padding to center
-				.sheet(isPresented: $showingProfile) {
-					ProfileView(showingProfile: $showingProfile) // Pass binding to ProfileView
-						.onDisappear {
-							// Reset state when dismissing
-							showingMyMeals = false // Ensure My Meals is hidden when ProfileView is dismissed
-							selectedTab = .home // Optionally switch back to home when profile is closed
-						}
-				}
+				.padding(.trailing, 10) // Padding to position the button on the right
 			}
-			.frame(maxHeight: 40) // Make the long box match the vertical lines height
-			.cornerRadius(10)
-			.shadow(radius: 5)
 
 			Divider()
 				.background(Color.green.opacity(0.7)) // Match the divider color to the background
 		}
-	}
-
-	// Function to create tab buttons
-	private func createTabButton(title: String, tab: Tab, action: @escaping () -> Void) -> some View {
-		Button(action: {
-			action()
-		}) {
-			Text(title)
-				.frame(maxWidth: .infinity)
-				.padding()
-				.foregroundColor(.green) // Set all tab titles to green
-				.background(selectedTab == tab ? Color.gray : Color.clear)
-				.cornerRadius(5)
-		}
+		.padding(.top)
 	}
 }
 
-// Preview for HeaderView
 struct HeaderView_Previews: PreviewProvider {
 	@State static var showingProfile: Bool = false
-	@State static var selectedTab: Tab = .home
-	@State static var showingMyMeals: Bool = false
 
 	static var previews: some View {
-		HeaderView(
-			showingProfile: $showingProfile,
-			selectedTab: $selectedTab,
-			showingMyMeals: $showingMyMeals,
-			switchToFavorites: {},
-			switchToMyMeals: {}
-		)
-		.previewLayout(.sizeThatFits)
-		.padding()
+		HeaderView(showingProfile: $showingProfile)
+			.previewLayout(.sizeThatFits)
+			.padding()
 	}
 }
