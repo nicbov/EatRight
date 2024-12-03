@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: not-a-secret
+      MYSQL_DATABASE: recipedb
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -u root -h db -pnot-a-secret -c recipedb -B -e 'SHOW TABLES;'"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+  backend:
+    image: eatright-backend
+    build:
+      context: ./Backend
+      network: host
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    environment:
+      MYSQL_DATABASE_HOST: db
+      MYSQL_DATABASE_PASSWORD: not-a-secret
+    ports:
+      - "4000:4000"
+  android:
+    image: eatright-android
+    build:
+      context: ./android
+      network: host
+    profiles:
+      - with-android
+    devices:
+      - "/dev/kvm:/dev/kvm"
+    volumes:
+      - type: bind
+        source: ${EATRIGHT_SOURCE:-$PWD}
+        target: /EatRight
+        read_only: false

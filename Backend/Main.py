@@ -3,14 +3,17 @@ from flaskext.mysql import MySQL
 from werkzeug.security import generate_password_hash
 from io import BytesIO
 from Charts import makeChart
+import os
+import logging
 
 app = Flask(__name__)
 
 # MySQL Configuration
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'D&z%>C+R4=b5TCevL^8d*TyfgTy17kA(+(M?nE&<'
-app.config['MYSQL_DATABASE_DB'] = 'recipedb'
+app.config['MYSQL_DATABASE_HOST'] = os.environ.get('MYSQL_DATABASE_HOST', 'localhost')
+app.config['MYSQL_DATABASE_PORT'] = int(os.environ.get('MYSQL_DATABASE_PORT', '3306'))
+app.config['MYSQL_DATABASE_USER'] = os.environ.get('MYSQL_DATABASE_USER', 'root')
+app.config['MYSQL_DATABASE_PASSWORD'] = os.environ.get('MYSQL_DATABASE_PASSWORD', 'D&z%>C+R4=b5TCevL^8d*TyfgTy17kA(+(M?nE&<')
+app.config['MYSQL_DATABASE_DB'] = os.environ.get('MYSQL_DATABASE_DB', 'recipedb')
 
 # Initialize MySQL
 mysql = MySQL()

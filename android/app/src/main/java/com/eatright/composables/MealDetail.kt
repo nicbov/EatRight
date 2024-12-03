@@ -72,26 +72,30 @@ data class RecipeDetails(
 
 @Serializable
 data class InstructionInfo(
-    @SerialName("Instruction")
-    val instruction: String,
+    @SerialName("Description")
+    val description: String,
     @SerialName("Step")
     val step: Int
 )
 
 @Serializable
 data class NutritionInfo(
+    @SerialName("Amount")
     val amount: Double,
+    @SerialName("Name")
     val name: String,
+    @SerialName("PercentOfDailyNeeds")
     val percentOfDailyNeeds: Double,
+    @SerialName("Unit")
     val unit: String
 )
 
 @Serializable
 data class PriceInfo(
     @SerialName("Amount")
-    val amount: Double,
-    @SerialName("Name")
-    val name: String,
+    val amount: String,
+    @SerialName("Ingredient")
+    val ingredient: String,
     @SerialName("Price")
     val price: Double
 )
@@ -135,7 +139,7 @@ fun MealDetail(
         }
     }
     LaunchedEffect(key1 = true) {
-        val eatRightBackendAddress = "10.0.2.2:3000"
+        val eatRightBackendAddress = "10.0.2.2:4000"
         recipeDetails =
             client.get("http://${eatRightBackendAddress}/recipe/${recipeId}").body()
         val tasteInfo = recipeDetails?.tasteInfo
@@ -225,7 +229,7 @@ fun MealDetail(
                                         modifier = Modifier.padding(end = 8.dp)
                                     )
                                     Text(
-                                        text = instructionInfo.instruction,
+                                        text = instructionInfo.description,
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(28.dp))
@@ -258,7 +262,7 @@ fun MealDetail(
                                         modifier = Modifier.padding(end = 8.dp)
                                     )
                                     Text(
-                                        text = "${priceInfo.amount} ${priceInfo.name} - $${priceInfo.price}",
+                                        text = "${priceInfo.amount} ${priceInfo.ingredient} - $${priceInfo.price}",
                                     )
                                 }
                             }

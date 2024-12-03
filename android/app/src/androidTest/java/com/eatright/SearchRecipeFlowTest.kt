@@ -19,7 +19,7 @@ class SearchRecipeFlowTest {
     val rule = createComposeRule()
 
     @Test
-    fun meatballs() {
+    fun spaghetti() {
         rule.setContent {
             EatRightTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -55,7 +55,7 @@ class SearchRecipeFlowTest {
         rule
             .onNodeWithText("Search for recipes...", useUnmergedTree = true)
             .onParent()
-            .performTextInput("meatballs")
+            .performTextInput("spaghetti")
         rule
             .onNodeWithText("Fetch Recipes")
             .performClick()

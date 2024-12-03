@@ -6,8 +6,8 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 
 WORKDIR /app
-COPY data data
-COPY Main.py .
+COPY *.py .
+COPY data/ data/
+COPY entrypoint.sh entrypoint.sh
 
-EXPOSE 3001
-ENTRYPOINT ["python", "Main.py", "--mode", "replay", "--static-root", "data/api.spoonacular.com"]
+ENTRYPOINT ["./entrypoint.sh"]

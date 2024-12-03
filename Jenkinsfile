@@ -7,7 +7,7 @@ pipeline {
         GITHUB_TOKEN = credentials('GITHUB_TOKEN')
         DIR = 'EatRight'
         ANDROID_DIR = 'EatRight/android'
-        DOCKER_COMPOSE_CMD = "docker compose -f env.docker-compose.yml -p ${env.BUILD_NUMBER}"
+        DOCKER_COMPOSE_CMD = "docker compose --profile with-android -p ${env.BUILD_NUMBER}"
     }
 
     stages {
@@ -89,12 +89,21 @@ pipeline {
                         stage('Test') {
                             steps {
                                 dir(ANDROID_DIR) {
-                                    sh "${env.DOCKER_COMPOSE_CMD} exec android sh -c \"socat TCP-LISTEN:3000,fork TCP:backend:3000 & adb -s emulator-5556 shell screenrecord /sdcard/screen.mp4 & cd /EatRight/android && ANDROID_SERIAL=emulator-5556 gradle connectedAndroidTest\""
+                                    sh "${env.DOCKER_COMPOSE_CMD} exec android sh -c \"socat TCP-LISTEN:4000,fork TCP:backend:4000 & adb -s emulator-5556 shell screenrecord /sdcard/screen.mp4 & cd /EatRight/android && ANDROID_SERIAL=emulator-5556 gradle connectedAndroidTest\""
                                     sh "${env.DOCKER_COMPOSE_CMD} exec android sh -c \"cd /EatRight/android && adb -s emulator-5556 kill-server && adb -s emulator-5556 pull /sdcard/screen.mp4\""
                                     sh "${env.DOCKER_COMPOSE_CMD} exec android sudo find /EatRight/ -user circleci -print -exec chown \$(id -u):\$(id -g) {} \\;"
                                 }
                             }
                         }
+			stage('Deploy') {
+			    steps {
+			        dir(DIR) {
+				  sh "ssh eatright@benji.ddnsgeek.com rm -Rf /tmp/Backend"
+				  sh "scp -r Backend/ eatright@benji.ddnsgeek.com:/tmp/"
+				  sh "ssh eatright@benji.ddnsgeek.com 'cd /tmp/Backend && ./reset-staging.sh'"
+				}
+			    }
+			}
                         stage('Terminate other branches') {
                             steps  {
                                 dir(DIR) {

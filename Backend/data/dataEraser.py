@@ -1,11 +1,13 @@
 import mysql.connector
+import os
 
 # Establishing the MySQL connection
 db_connection = mysql.connector.connect(
-    host="localhost",      # Change to your host if not localhost
-    user="root",           # Replace with your MySQL username
-    password='D&z%>C+R4=b5TCevL^8d*TyfgTy17kA(+(M?nE&<',  # Replace with your MySQL password
-    database="recipedb"    # Replace with your database name
+    host=os.environ.get('MYSQL_DATABASE_HOST', 'localhost'),
+    port=int(os.environ.get('MYSQL_DATABASE_PORT', '3306')),
+    user=os.environ.get('MYSQL_DATABASE_USER', 'root'),
+    password=os.environ.get('MYSQL_DATABASE_PASSWORD', 'D&z%>C+R4=b5TCevL^8d*TyfgTy17kA(+(M?nE&<'),
+    database=os.environ.get('MYSQL_DATABASE_DB', 'recipedb'),
 )
 
 cursor = db_connection.cursor()
